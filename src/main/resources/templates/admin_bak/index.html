@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+#set(String active = 'index')
+#set(String title = '仪表盘')
+<html lang="zh-cn">
+<head>
+    #include('./partial/head.html', {active: active, title: title})
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html', {active: active, title: title})
+#include('./partial/menu.html', {active: active, title: title})
+<div id="app" v-cloak class="mdui-container-fluid mdui-m-a-3">
+    <div class="mdui-row">
+        <div class="mdui-col-md-4">
+            <div class="mdui-shadow-1 mdui-p-a-2 mdui-text-center mdui-color-white">
+                <span class="mdui-chip-icon"><i class="mdui-icon material-icons">receipt</i></span>
+                <span class="mdui-chip-title">发表了${statistics.articles}篇文章</span>
+            </div>
+        </div>
+        <div class="mdui-col-md-4">
+            <div class="mdui-shadow-1 mdui-p-a-2 mdui-text-center mdui-color-white">
+                <span class="mdui-chip-icon"><i class="mdui-icon material-icons">insert_comment</i></span>
+                <span class="mdui-chip-title">收到了${statistics.comments}条留言</span>
+            </div>
+        </div>
+        <div class="mdui-col-md-4">
+            <div class="mdui-shadow-1 mdui-p-a-2 mdui-text-center mdui-color-white">
+                <span class="mdui-chip-icon"><i class="mdui-icon material-icons">folder_open</i></span>
+                <span class="mdui-chip-title">上传了${statistics.attachs}个附件</span>
+            </div>
+        </div>
+    </div>
+    <div class="mdui-row">
+        <div class="mdui-col-md-4 mdui-col-sm-12 mdui-col-lg-4">
+            <div class="mdui-shadow-2 mdui-m-y-2">
+                <!-- 最新文章 -->
+                <div class="mdui-table-fluid">
+                    <table class="mdui-table mdui-table-selectable mdui-table-hoverable">
+                        <thead>
+                        <tr>
+                            <th>标题</th>
+                            <th class="mdui-table-col-numeric">评论</th>
+                            <th class="mdui-text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        #for(item : articles)
+                        <tr>
+                            <td class="mdui-ripple">${item.title}</td>
+                            <td class="mdui-ripple mdui-table-col-numeric">${item.commentsNum}</td>
+                            <td class="mdui-ripple mdui-text-center">
+                                <button @click="viewArticle('${item.cid}')" mdui-tooltip="{content: '查看'}" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200">
+                                    <i class="mdui-icon material-icons">remove_red_eye</i>
+                                </button>
+                            </td>
+                        </tr>
+                        #end
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-col-md-4 mdui-col-sm-12 mdui-col-lg-4">
+            <div class="mdui-color-white mdui-shadow-2 mdui-m-y-2">
+                <!-- 最新留言 -->
+                <ul class="mdui-list">
+                    <li class="mdui-list-item mdui-ripple" v-for="item in comments">
+                        <i class="mdui-list-item-avatar mdui-icon material-icons">account_circle</i>
+                        <div class="mdui-list-item-content mdui-text-left">
+                            <div class="mdui-list-item-title mdui-list-item-one-line">
+                                <span class="mdui-m-r-2">{{ item.author }}</span>
+                                <span class="mdui-float-right">{{ item.created | formatUnix('MM-DD HH:mm') }}</span>
+                            </div>
+                            <div class="mdui-list-item-text mdui-list-item-three-line" style="height: auto!important;">
+                                <a :href="'http://blog.zaoangod.top/article/' + item.cid + '#comments'" target="_blank">{{ item.content | truncate(10,'...')}}</a>
+                            </div>
+                            <div class="mdui-btn-group mdui-float-right" v-if="item.status == 'no_audit'">
+                                <button type="button" @click="audit(item.coid, 'approved')" class="mdui-btn mdui-btn-icon mdui-btn-dense" mdui-tooltip="{content: '通过'}">
+                                    <i class="mdui-icon material-icons">done</i>
+                                </button>
+                                <button type="button" @click="deleteComment(item.coid)" class="mdui-btn mdui-btn-icon mdui-btn-dense" mdui-tooltip="{content: '删除'}">
+                                    <i class="mdui-icon material-icons">delete_forever</i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mdui-list-item mdui-ripple" v-if="comments.length == 0">
+                        <div class="mdui-list-item-content mdui-text-center">没有收到评论哦</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mdui-col-md-4 mdui-col-sm-12 mdui-col-lg-4">
+            <div class="mdui-color-white mdui-shadow-2 mdui-m-y-2">
+                <ul class="mdui-list">
+                    <li v-for="item in logPage.rows" class="mdui-list-item mdui-ripple mdui-typo">
+                        {{ item.created | formatUnix('YYYY-MM-DD HH:mm:ss') }} &nbsp;&nbsp;<small><kbd>{{item.action}}</kbd></small>
+                    </li>
+                </ul>
+                <div class="pageNav mdui-p-y-2">
+                    <button v-if="logPage.hasPrevPage" @click="load(logPage.prevPage)" class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-ripple">
+                        <i class="mdui-icon material-icons">arrow_back</i>
+                    </button>
+                    <button v-else class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-ripple" disabled>
+                        <i class="mdui-icon material-icons">arrow_back</i>
+                    </button>
+                    <button class="mdui-btn mdui-btn-dense mdui-ripple">
+                        {{ logPage.pageNum }} / {{ logPage.totalPages }}
+                    </button>
+                    <button v-if="logPage.hasNextPage" @click="load(logPage.nextPage)" class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-ripple">
+                        <i class="mdui-icon material-icons">arrow_forward</i>
+                    </button>
+                    <button v-else class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-ripple" disabled>
+                        <i class="mdui-icon material-icons">arrow_forward</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            logPage: {},
+            comments: []
+        },
+        beforeCreate: function () {
+            console.log('---> beforeCreate');
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (page) {
+                let $vm = this;
+                tale.get({
+                    url: '/admin/api/log',
+                    data: {
+                        page: page,
+                        limit: 8
+                    },
+                    success: function (data) {
+                        if (!data.payload) {
+                            return false;
+                        }
+                        $vm.logPage = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+                tale.get({
+                    url: '/admin/api/comment',
+                    success: function (data) {
+                        if (!data.payload.rows) {
+                            $vm.comments = [];
+                        } else {
+                            $vm.comments = data.payload.rows;
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+            },
+            audit: function (coid, status) {
+                let $vm = this;
+                tale.put({
+                    url: '/admin/api/comment',
+                    data: {coid: coid, status: status},
+                    success: function (result) {
+                        if (result && result.success) {
+                            mdui.snackbar({message: '已通过', position: 'top'});
+                            $vm.load();
+                        } else {
+                            mdui.alert(result.msg || '评论设置失败');
+                        }
+                    }
+                });
+            },
+            viewArticle: function (cid) {
+                window.open("${siteUrl('/article/')}" + cid);
+            },
+            deleteComment: function (coid) {
+                let $vm = this;
+                mdui.confirm('确定删除该评论吗?', '警告',
+                    function () {
+                        tale.post({
+                            url: '/admin/api/comment/delete/' + coid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    mdui.snackbar({message: '评论删除成功', position: 'top'});
+                                    $vm.load();
+                                } else {
+                                    mdui.alert(result.msg || '评论删除失败');
+                                }
+                            }
+                        });
+                    },
+                    function () {
+                    },
+                    {confirmText: '确认', cancelText: '取消'}
+                );
+            }
+        }
+    });
+</script>
+</body>
+</html>

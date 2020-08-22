@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+#set(String active = 'pages')
+#set(String title = '页面管理')
+<html>
+<head>
+    #include('./partial/head.html', {active: active, title: title})
+    <style type="text/css">
+        td {
+            border-bottom: 0 !important;
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+    </style>
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html',{active:active, title: title})
+#include('./partial/menu.html',{active: active, title: title})
+<div id="app" class="mdui-container-fluid mdui-m-a-3" v-cloak>
+    <div class="mdui-row mdui-m-y-2">
+        <div class="mdui-col-xs-12 mdui-p-x-0">
+            <div class="mdui-table-fluid mdui-shadow-4">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                    <tr>
+                        <th>页面名称</th>
+                        <th>页面路径</th>
+                        <th>发布时间</th>
+                        <th>发布状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="dataTBody">
+                    <tr v-for="item in pageInfo.list">
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.slug }}</td>
+                        <td>{{ item.created | formatUnix }}</td>
+                        <td>
+                            <span v-show="item.status == 'publish'">已发布</span>
+                            <span v-show="item.status == 'draft'">草稿</span>
+                        </td>
+                        <td>
+                            <a :href="'/admin/page/edit/' + item.cid" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '编辑'}">
+                                <i class="mdui-icon material-icons">edit</i>
+                            </a>
+                            <a @click="deleteArticle(item.cid)" href="javascript:void(0)" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '删除'}">
+                                <i class="mdui-icon material-icons">delete</i>
+                            </a>
+                            <a :href="'${siteUrl()}/' + item.slug" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '预览'}">
+                                <i class="mdui-icon material-icons">remove_red_eye</i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            #include('./partial/pageNav.html')
+        </div>
+    </div>
+</div>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            pageInfo: {},
+            pageParam: {type: 'page', page: 1}
+        },
+        beforeCreate: function () {
+        },
+        mounted: function () {
+            this.load(1);
+        },
+        methods: {
+            load: function (page = 1) {
+                let $vm = this;
+                tale.get({
+                    url: '/a/i/page',
+                    data: $vm.pageParam,
+                    success: function (data) {
+                        console.log(data);
+                        $vm.pageInfo = data.payload;
+                    },
+                    error: function (error) {
+                        mdui.alert(error.msg || '数据加载失败');
+                    }
+                });
+            },
+            deleteArticle: function (cid) {
+                let $vm = this;
+                tale.alertConfirm({
+                    title: '确定删除这个页面吗?', then: function () {
+                        tale.post({
+                            url: '/admin/api/page/delete/' + cid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    mdui.alert('页面删除成功');
+                                    $vm.load(1);
+                                } else {
+                                    mdui.alert(result.msg || '页面删除失败');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>
+

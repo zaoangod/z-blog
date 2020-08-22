@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+#set(String active = 'themes')
+#set(String title = '主题管理')
+#set(String siteTheme = siteTheme())
+<html lang="zh-cn">
+<head>
+    #include('./partial/head.html', {active: active, title: title})
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html', {active: active, title: title})
+#include('./partial/menu.html', {active: active, title: title})
+<div class="mdui-container-fluid mdui-p-a-3">
+    <div id="app" class="mdui-row mdui-m-a-0" v-cloak>
+        <!--<div class="mdui-card mdui-shadow-4 mdui-p-a-2" v-for="item in themes">
+            <div class="mdui-col-xl-3 mdui-col-lg-3 mdui-col-md-3 mdui-col-sm-4 mdui-grid-list">
+                <div class="mdui-grid-tile">
+                    <img class="mdui-img-fluid" style="height: 180px;" :src="'/templates/themes/' + item.name + '/screenshot.png'" :title="item.name">
+                    <div class="mdui-grid-tile-actions">
+                        <div class="mdui-grid-tile-text">
+                            <div class="mdui-grid-tile-title">主题：{{item.name}}</div>
+                            <div class="mdui-grid-tile-subtitle" v-if="item.name == siteTheme">（当前主题）</div>
+                        </div>
+                        <div class="mdui-grid-tile-buttons" v-if="item.name != siteTheme">
+                            <button type="button" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '应用此主题'}" @click="reaffirm(item.name)">
+                                <i class="mdui-icon material-icons mdui-text-color-theme-accent">style</i>
+                            </button>
+                        </div>
+                        <div class="mdui-grid-tile-buttons" v-if="item.name == siteTheme">
+                            <button type="button" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '主题设置'}" onclick="javascript: window.location.href = '/admin/theme/setting';">
+                                <i class="mdui-icon material-icons mdui-text-color-theme-accent">settings_applications</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+        <div class="mdui-grid-tile mdui-m-b-2 mdui-p-a-2 mdui-shadow-2" v-for="item in themes" style="background: #fff;">
+            <img :src="'/templates/themes/' + item.name + '/screenshot.png'" :title="item.name">
+            <div class="mdui-grid-tile-actions">
+                <div class="mdui-grid-tile-text">
+                    <div class="mdui-grid-tile-title">{{item.name}}</div>
+                    <div class="mdui-grid-tile-subtitle" v-if="item.name == siteTheme">（当前主题）</div>
+                    <div class="mdui-grid-tile-subtitle" v-else></div>
+                </div>
+                <div class="mdui-grid-tile-buttons">
+                    <button class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '启用主题'}" v-if="item.name != siteTheme" @click="reaffirm(item.name)">
+                        <i class="mdui-icon material-icons">star_border</i>
+                    </button>
+                    <button class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '主题设置'}" v-else @click="toThemeSettingPage()">
+                        <i class="mdui-icon material-icons">settings</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!---->
+        <!---->
+        <!---->
+        <!---->
+
+    </div>
+</div>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            themes: [],
+            siteTheme: '${siteTheme}',
+            themeName: '',
+        },
+        beforeCreate: function () {
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function () {
+                let $vm = this;
+                tale.get({
+                    url: '/admin/api/theme',
+                    success: function (data) {
+                        $vm.themes = data.payload
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+            },
+            reaffirm: function (name) {
+                let $vm = this;
+                $vm.themeName = name;
+                mdui.confirm('确定启用[' + name + ']主题吗?', '提示',
+                    function () {
+                        $vm.settingTheme();
+                    },
+                    function () {
+                    },
+                    {confirmText: '确定', cancelText: '取消'}
+                );
+            },
+            settingTheme: function () {
+                let $vm = this;
+                let themeName = $vm.themeName;
+                tale.post({
+                    url: '/admin/api/theme/active',
+                    data: {siteTheme: themeName},
+                    success: function (result) {
+                        $vm.siteTheme = themeName;
+                        if (result && result.success) {
+                            mdui.snackbar({message: '主题启用成功', position: 'top', timeout: 2000});
+                            $vm.load();
+                        } else {
+                            mdui.snackbar({message: result.msg || '主题启用失败', position: 'top', timeout: 2000});
+                        }
+                    }
+                });
+            },
+            toThemeSettingPage: function () {
+                window.location.href = '/admin/theme/setting';
+            }
+        }
+    });
+</script>
+</body>
+</html>

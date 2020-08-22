@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #include('./partial/head.html', {active: 'article', title: '文章管理'})
+    <style>
+        body {
+            background-color: #EDF0F6;
+        }
+
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+        }
+    </style>
+</head>
+<body style="margin: 0;">
+<div id="app">
+    <el-container>
+        <el-header>
+            #include('./partial/header.html')
+        </el-header>
+        <el-container>
+            <el-aside width="300px" class="hidden-xs-only">
+                #include('./partial/menu.html')
+            </el-aside>
+            <el-container>
+                <el-main>
+                    #include('./' + template)
+                </el-main>
+                <el-footer>Footer</el-footer>
+            </el-container>
+        </el-container>
+    </el-container>
+</div>
+<script>
+    let app = Vue.extend(main);
+    new app().$mount('#app');
+</script>
+</body>
+</html>

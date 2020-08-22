@@ -1,0 +1,36 @@
+@charset "UTF-8";
+/**评论相关结束*/
+@media screen and (max-width: 799px) {
+    .aside-wrap {
+        display: none;
+    }
+
+    .content-wrap {
+        left: 0;
+        margin: 3.5rem 0.5rem 0.5rem 0.5rem !important;
+    }
+
+    .percent-m-x {
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+
+    .percent-p-x {
+        padding-left: 2%;
+        padding-right: 2%;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .aside-wrap {
+        display: block;
+    }
+
+    .content-wrap {
+        left: 18.75rem;
+    }
+
+    .site-info {
+        display: none;
+    }
+}

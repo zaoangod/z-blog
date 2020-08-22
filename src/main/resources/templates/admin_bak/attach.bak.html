@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+#set(String active = 'attaches')
+#set(String title = '附件管理')
+<html>
+<head>
+    #include('./partial/head.html', {active: active, title: title})
+    <style type="text/css">
+        td {
+            border-bottom: 0 !important;
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+    </style>
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html', {active: active, title: title})
+#include('./partial/menu.html', {active: active, title: title})
+<div id="app" v-cloak class="mdui-container-fluid mdui-p-a-3">
+    <div class="mdui-row mdui-shadow-2 mdui-p-a-1 mdui-color-white">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="mdui-textfield mdui-m-r-1" style="flex-grow:1;">
+                <i class="mdui-icon material-icons">vertical_align_top</i>
+                <input onclick="document.getElementById('file').click();" :value="fileName" readonly="readonly" class="mdui-textfield-input" type="text" placeholder="点击选择文件"/>
+                <input @change="updateFile" id="file" name="file" type="file" style="display: none;"/>
+            </div>
+            <button @click="uploadFile" class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme-accent">上传文件</button>
+        </div>
+    </div>
+    <div class="mdui-row mdui-m-y-2">
+        <div class="mdui-col-xs-12 mdui-p-x-0">
+            <div class="mdui-table-fluid mdui-shadow-2">
+                <table class="mdui-table mdui-table-hoverable">
+                    <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th>创建时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="dataTBody">
+                    <tr v-for="item in pageInfo.rows">
+                        <td>{{ item.fname | truncate(30,'...') }}</td>
+                        <td>{{ item.ftype }}</td>
+                        <td>{{ item.created | formatUnix }}</td>
+                        <td>
+                            <button @click="copyUrl(item.fkey)" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '分享文件'}">
+                                <i class="mdui-icon material-icons">share</i>
+                            </button>
+                            <button @click="deleteAttach(item.id)" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '删除文件'}">
+                                <i class="mdui-icon material-icons">delete</i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            #include('./partial/pageNav.html')
+        </div>
+    </div>
+</div>
+
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            pageInfo: {},
+            pageParam: {page: 1, fName: null, fType: null},
+            //
+            file: '',
+            fileName: '',
+            fileURL: ''
+        },
+        beforeCreate: function () {
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function (page = 1) {
+                let $vm = this;
+                tale.get({
+                    url: '/a/i/attach',
+                    data: $vm.pageParam,
+                    success: function (data) {
+                        $vm.pageInfo = data.payload
+                    },
+                    error: function (error) {
+                        alert(error || '数据加载失败');
+                    }
+                });
+                $vm.pageParam.page = page;
+            },
+            deleteAttach: function (id) {
+                let $vm = this;
+                mdui.confirm('确定删除该附件吗?', '警告',
+                    function () {
+                        tale.delete({
+                            url: '/admin/api/attach/' + id,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    mdui.alert('文件删除成功');
+                                    $vm.load(1);
+                                } else {
+                                    mdui.alert(result.msg || '文件删除失败');
+                                }
+                            }
+                        });
+                    },
+                    function () {
+                    },
+                    {confirmText: '确定', cancelText: '取消'}
+                );
+            },
+            updateFile: function (e) {
+                let $vm = this;
+                if (e.currentTarget.files.length !== 0) {
+                    $vm.fileName = e.currentTarget.files[0].name;
+                    $vm.file = e.currentTarget.files[0];
+                }
+            },
+            uploadFile: function (e) {
+                let $vm = this;
+                let file = $vm.file;
+                if (file === '') {
+                    mdui.alert('请选择文件后再试');
+                    return false;
+                }
+                let data = new FormData();
+                data.append('file', file);
+                tale.post({
+                    url: '/admin/api/attach/upload',
+                    data: data,
+                    success: function (result) {
+                        if (result && result.success) {
+                            $vm.load(1);
+                            mdui.snackbar({message: '上传成功', timeout: 1000});
+                        } else {
+                            mdui.alert(result.msg || '文件上传失败');
+                        }
+                    },
+                    error: function (error) {
+                        mdui.alert(result.msg || '文件上传失败');
+                    }
+                });
+            },
+            copyUrl: function (url) {
+                let copyURL = document.createElement('input');
+                copyURL.value = attachURL + url;
+                document.body.appendChild(copyURL);
+                copyURL.select();
+                document.execCommand("Copy");
+                copyURL.remove();
+            }
+        }
+    });
+</script>
+</body>
+</html>

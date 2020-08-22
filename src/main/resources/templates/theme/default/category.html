@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    #include('./partial/head.html')
+</head>
+<body>
+<div class="main-container">
+    #include('./partial/header.html')
+    <main class="content-wrap util--m-a-4">
+        #if (urlPrefix)
+        <div class="category-box percent-p-x util--p-y-4">
+            <header class="category-header util--p-y-4">
+                <h4>分类: ${category.name}</h4>
+                <p class="util--p-t-1">共计 ${category.count} 篇文章</p>
+            </header>
+            <div class="category-list percent-p-x util--p-y-4">
+                #for(item: pageInfo.list)
+                <article class="category-item util--p-x-2 util--p-y-3">
+                    <a class="category-title" href="/article/${item.aid}">${item.title}</a>
+                    <div class="category-date">
+                        <img class="util--m-r-1" src="${themeUrl('/img/icon/date.svg')}" alt="">
+                        <span>${fmtDate(item.created, 'YYYY-MM-dd')}</span>
+                    </div>
+                </article>
+                #end
+            </div>
+        </div>
+        #include('./partial/pageNav.html', {pageInfo: pageInfo, prefix: urlPrefix})
+        #else
+        <div class="category-box percent-p-x util--p-y-4">
+            <header class="category-header util--p-y-4">
+                <h3>分类</h3>
+                <p class="util--p-t-1">目前共计 ${statistic().category} 个分类</p>
+            </header>
+            <div class="category-list">
+                #for(item: categories)
+                <a class="category-a" href="/category/${item.mid}">${item.name} (${item.count})</a>
+                #end
+            </div>
+        </div>
+        #end
+        #include('./partial/footer.html')
+    </main>
+</div>
+</body>
+</html>

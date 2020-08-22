@@ -1,0 +1,27 @@
+<aside class="disable-user-select side-wrap">
+    <div class="side-fill"></div>
+    <div class="side-nav">
+        <img class="side-nav--head" src="${themeUrl()+'/img/head.png'}" alt="${siteTitle()}"/>
+        <a class="side-nav--title" href="${siteUrl()}">${siteTitle()}</a>
+        <p class="side-nav--subtitle">${siteSubtitle()}</p>
+        <ul id="menu" class="side-nav--menu">
+            <li><a href="/">首页</a></li>
+            <li><a href="/archive">归档</a></li>
+            <li><a href="/category">分类</a></li>
+            <li><a href="/tag">标签</a></li>
+            <li><a href="/page/links">友链</a></li>
+            <li><a href="/page/about">关于</a></li>
+        </ul>
+        <div class="side-nav--social">
+            <a target="_blank" href="//${themeOption('social_github','#')}">
+                <img title="github" src="${themeUrl()+'/img/social/github.svg'}">
+            </a>
+            <a target="_blank" href="//${themeOption('social_weibo','')}">
+                <img title="weibo" src="${themeUrl()+'/img/social/weibo.svg'}">
+            </a>
+            <a target="_blank" href="//${siteOption('social_zhihu','#')}">
+                <img title="zhihu" src="${themeUrl()+'/img/social/zhihu.svg'}">
+            </a>
+        </div>
+    </div>
+</aside>

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+#set(String active = 'publish')
+#set(String title = '编辑文章')
+<html lang="zh">
+<head>
+    #include('../partial/head.html', {active: active, title: title})
+    <link href="/static/admin/plugins/mditor/css/mditor.min.css" rel="stylesheet" type="text/css">
+    <script src="/static/admin/plugins/mditor/js/mditor.min.js" type="text/javascript"></script>
+    <link href="/static/admin/plugins/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css">
+    <script src="/static/admin/plugins/flatpickr/flatpickr.min.js" type="text/javascript"></script>
+    <script src="/static/admin/plugins/wangEditor/wangEditor.min.js" type="text/javascript"></script>
+    <style>
+        .tale-select {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+        }
+        .mdui-panel-item-open:last-child {
+            margin-bottom: 0 !important;
+        }
+        .w-e-text-container {
+            z-index: 999 !important;
+        }
+    </style>
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('../partial/header.html', {active: active, title: title})
+#include('../partial/menu.html', {active: active, title: title})
+<div id="app" v-cloak class="mdui-container-fluid mdui-m-a-3">
+    <input type="hidden" id="attach_url" value="${attachURL()}"/>
+    <div class="mdui-panel mdui-panel-popout" mdui-panel>
+        <div class="mdui-panel-item mdui-panel-item-open">
+            <div class="mdui-panel-item-header mdui-ripple">
+                <div class="mdui-panel-item-title">文章信息</div>
+                <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+            </div>
+            <div class="mdui-panel-item-body">
+                <div class="mdui-row">
+                    <div class="mdui-col-md-6">
+                        <div class="mdui-textfield">
+                            <label class="mdui-textfield-label mdui-text-truncate">请输入文章标题（必须）</label>
+                            <input type="text" class="mdui-textfield-input" v-model="article.title" required/>
+                        </div>
+                    </div>
+                    <div class="mdui-col-md-6">
+                        <div class="mdui-textfield">
+                            <label class="mdui-textfield-label mdui-text-truncate">自定义访问路径，如：my-first-article 默认为文章id</label>
+                            <input type="text" class="mdui-textfield-input" v-model="article.slug"/>
+                        </div>
+                    </div>
+                    <div class="mdui-col-md-6">
+                        <div class="tale-select mdui-m-b-1 mdui-m-t-2">
+                            <button class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple" @click="addTag" mdui-tooltip="{content: '添加文章标签'}">
+                                <i class="mdui-icon material-icons">add</i>
+                            </button>
+                            <p class="mdui-typo-body-2-opacity mdui-m-l-1" v-if="article.tagArr.length === 0">添加文章标签</p>
+                            <div class="mdui-chip mdui-m-l-1" v-for="item in article.tagArr">
+                                <span class="mdui-chip-title">{{ item }}</span>
+                                <span class="mdui-chip-delete" @click="deleteTag(item)"><i class="mdui-icon material-icons">cancel</i></span>
+                            </div>
+                        </div>
+                        <div class="mdui-divider"></div>
+                    </div>
+                    <div class="mdui-col-md-6">
+                        <div class="tale-select mdui-m-b-1 mdui-m-t-2">
+                            <button class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple" mdui-dialog="{target: '#categoryDialog'}" mdui-tooltip="{content: '添加文章分类'}">
+                                <i class="mdui-icon material-icons">add</i>
+                            </button>
+                            <p class="mdui-typo-body-2-opacity mdui-m-l-1" v-if="article.categoryArr.length === 0">添加文章分类</p>
+                            <div class="mdui-chip mdui-m-l-1" v-for="item in article.categoryArr">
+                                <span class="mdui-chip-title">{{ item }}</span>
+                                <span class="mdui-chip-delete" v-if="item != '默认分类'" @click="deleteCategory(item)"><i class="mdui-icon material-icons">cancel</i></span>
+                            </div>
+                        </div>
+                        <div class="mdui-divider"></div>
+                    </div>
+                </div>
+                <div class="mdui-row">
+                    <div class="mdui-col-sm-3">
+                        <label class="mdui-switch mdui-p-t-2 mdui-p-b-1">
+                            <input type="checkbox" v-model="article.allowComment"/>
+                            <i class="mdui-switch-icon mdui-m-r-1"></i>
+                            开启评论
+                        </label>
+                    </div>
+                    <div class="mdui-col-sm-3">
+                        <label class="mdui-switch mdui-p-t-2 mdui-p-b-1">
+                            <input type="checkbox" v-model="article.allowPing"/>
+                            <i class="mdui-switch-icon mdui-m-r-1"></i>
+                            允许Ping
+                        </label>
+                    </div>
+                    <div class="mdui-col-sm-3">
+                        <label class="mdui-switch mdui-p-t-2 mdui-p-b-1">
+                            <input type="checkbox" v-model="article.allowFeed"/>
+                            <i class="mdui-switch-icon mdui-m-r-1"></i>
+                            允许订阅
+                        </label>
+                    </div>
+                    <div class="mdui-col-sm-3">
+                        <label class="mdui-switch mdui-p-t-2 mdui-p-b-1">
+                            <input type="checkbox" v-model="article.allowThumbImg"/>
+                            <i class="mdui-switch-icon mdui-m-r-1"></i>
+                            添加缩略图
+                        </label>
+                    </div>
+                </div>
+                <div class="mdui-row">
+                    <div class="mdui-col-sm-6">
+                        <div class="mdui-textfield">
+                            <input id="createdTime" class="mdui-textfield-input" :value="article.createdTime" type="text" placeholder="发布日期" mdui-tooltip="{content: '发布日期'}" readonly="readonly"/>
+                        </div>
+                    </div>
+                    <div class="mdui-col-sm-6">
+                        <div class="mdui-textfield" style="overflow: visible;">
+                            <select v-model="article.fmtType" @change="switchEditor()" class="mdui-select" mdui-select="{'position':'top'}">
+                                <option v-for="item in [{type:'markdown',name:'Markdown编辑器'},{type:'html',name:'富文本编辑器'}]" name="fmtType" :value="item.type">{{ item.name }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-panel-item mdui-panel-item-open">
+            <div class="mdui-panel-item-header mdui-ripple">
+                <div class="mdui-panel-item-title">文章内容</div>
+                <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+            </div>
+            <div class="mdui-panel-item-body mdui-p-x-2">
+                <div class="mdui-row">
+                    <div id="EditorContainer" class="mdui-col-xs-12 mdui-textfield mdui-p-y-0">
+                        <!-- <textarea></textarea> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="article.allowThumbImg" class="mdui-panel-item mdui-panel-item-open">
+            <div class="mdui-panel-item-header mdui-ripple">
+                <div class="mdui-panel-item-title">文章缩略图</div>
+                <i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+            </div>
+            <div class="mdui-panel-item-body">
+                <div class="mdui-row">
+                    <div class="mdui-card" onclick="javascript:document.getElementById('thumbImg').click();" style="border: 2px dashed rgb(233, 30, 99);border-radius: 5px;cursor: pointer;">
+                        <div class="mdui-card-media mdui-text-center" style="max-height: 400px;overflow-y: auto;">
+                            <input id="thumbImg" name="file" type="file" @change="uploadFile" accept="image/jpeg,image/png,image/gif" style="display: none;"/>
+                            <img v-if="article.thumbImg != ''" class="mdui-img-fluid" :src="'${attachURL()}'+article.thumbImg"/>
+                            <p v-if="article.thumbImg == ''" class="mdui-typo-headline" style="line-height: 100px;">可以为你的文章添加一张缩略图 :)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mdui-fab-wrapper" mdui-fab="{trigger: 'hover'}">
+        <button class="mdui-fab mdui-ripple mdui-color-theme-accent mdui-shadow-6">
+            <i class="mdui-icon material-icons">add</i>
+            <i class="mdui-icon mdui-fab-opened material-icons">close</i>
+        </button>
+        <div class="mdui-fab-dial">
+            <button @click="toList" class="mdui-fab mdui-fab-mini mdui-ripple" mdui-tooltip="{content: '返回列表', position: 'left'}">
+                <i class="mdui-icon material-icons">low_priority</i>
+            </button>
+            <button @click="publish('draft')" class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-pink" mdui-tooltip="{content: '存为草稿', position: 'left'}">
+                <i class="mdui-icon material-icons">description</i>
+            </button>
+            <button @click="publish('publish')" class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-red" mdui-tooltip="{content: '发布文章', position: 'left'}">
+                <i class="mdui-icon material-icons">open_in_browser</i>
+            </button>
+        </div>
+    </div>
+    <!--分类选择对话框-->
+    <div id="categoryDialog" class="mdui-dialog" style="height: auto!important;">
+        <div class="mdui-dialog-content">
+            <div class="mdui-dialog-title mdui-p-b-1">分类列表</div>
+            <div class="mdui-valign mdui-p-y-1" style="flex-wrap: wrap;overflow: visible;">
+                <div style="display: flex;" v-for="item in categories">
+                    <label class="mdui-checkbox mdui-p-l-3">
+                        <input v-if="item == '默认分类'" :value="item" v-model="article.categoryArr" type="checkbox" disabled checked/>
+                        <input v-else type="checkbox" :value="item" v-model="article.categoryArr"/>
+                        <i class="mdui-checkbox-icon"></i>
+                    </label>
+                    <div class="mdui-chip mdui-color-theme mdui-m-r-2 mdui-shadow-2">
+                        <span class="mdui-chip-title">{{ item }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-dialog-actions">
+            <button class="mdui-btn mdui-ripple" mdui-dialog-close>确认</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let url = window.location.toString();
+    let cid = url.substring(url.lastIndexOf("/") + 1);
+    let mdEdit, fullEdit;
+    let refreshIntervalId;
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            article: {
+                cid: '',
+                title: '',
+                content: '',
+                slug: '',
+                status: '',
+                fmtType: 'markdown',
+                thumbImg: '',
+                allowThumbImg: false,
+                allowComment: true,
+                allowFeed: true,
+                allowPing: true,
+                created: '',
+                modified: '',
+                categories: '',
+                tags: '',
+                createdTime: '',
+                categoryArr: [],
+                tagArr: []
+            },
+            categories: []
+        },
+        beforeCreate: function () {
+        },
+        mounted: function () {
+            let $vm = this;
+            $vm.load();
+        },
+        methods: {
+            load: function () {
+                let $vm = this;
+                //分类
+                tale.get({
+                    url: '/admin/api/category',
+                    success: function (res) {
+                        console.log('---> 加载文章分类完毕');
+                        $vm.categories = [];
+                        for (let i in res.payload) {
+                            let category = res.payload[i].name;
+                            $vm.categories.push(category);
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+                //文章信息
+                tale.get({
+                    url: '/admin/api/article/' + cid,
+                    success: function (res) {
+                        // console.log('---> 加载文章属性完毕');
+                        if (res.code * 1 !== 0 && !res.success) {
+                            mdui.alert('数据加载失败');
+                            return false;
+                        }
+                        $vm.initArticleAttr(res.payload);
+                        $vm.getContent();
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+            },
+            //文章内容
+            getContent: function () {
+                let $vm = this;
+                tale.get({
+                    url: '/admin/api/article/content/' + cid,
+                    success: function (res) {
+                        // console.log('---> 加载文章内容完毕');
+                        $vm.article.content = res;
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+            },
+            initArticleAttr: function (article) {
+                let $vm = this;
+                $vm.article.cid = article.cid;
+                $vm.article.title = article.title;
+                $vm.article.slug = article.slug;
+                $vm.article.tags = article.tags;
+                $vm.article.status = article.status;
+                $vm.article.fmtType = article.fmtType;
+                $vm.article.thumbImg = article.thumbImg;
+                $vm.article.allowThumbImg = (article.thumbImg);
+                $vm.article.allowComment = article.allowComment;
+                $vm.article.allowPing = article.allowPing;
+                $vm.article.allowFeed = article.allowFeed;
+                $vm.article.created = article.created;
+                $vm.article.modified = article.modified;
+                $vm.article.categories = [];
+                $vm.article.tags = [];
+                $vm.article.createdTime = moment(article.created).format('YYYY-MM-DD HH:mm:ss');
+                $vm.article.categoryArr = article.categories.split(',');
+                $vm.article.tagArr = article.tags.split(',');
+            },
+            initEditor: function (content = '') {
+                let $vm = this;
+                let fmtType = $vm.article.fmtType;
+                document.getElementById('EditorContainer').innerHTML = '';
+                if (fmtType === 'markdown') {
+                    let mdTextarea = document.createElement('textarea');
+                    mdTextarea.setAttribute('id', 'mdEditor');
+                    document.getElementById('EditorContainer').appendChild(mdTextarea);
+                    mdEdit = Mditor.fromTextarea(document.getElementById('mdEditor'));
+                    mdEdit.value = content;
+                } else if (fmtType === 'html') {
+                    let wEdit = window.wangEditor;
+                    fullEdit = new wEdit(document.getElementById('EditorContainer'));
+                    fullEdit.create();
+                    fullEdit.txt.html(content);
+                }
+            },
+            //删除此文章分类
+            deleteCategory: function (item) {
+                let $vm = this;
+                let list = $vm.article.categoryArr;
+                $vm.article.categoryArr = list.filter(e => e !== item);
+            },
+            //删除此文章标签
+            deleteTag: function (item) {
+                let $vm = this;
+                let list = $vm.article.tagArr;
+                $vm.article.tagArr = list.filter(e => e !== item);
+            },
+            publish: function (status) {
+                let $vm = this;
+                let title = $vm.article.title.trim();
+                if (title === '') {
+                    mdui.alert('请输入文章标题');
+                    return;
+                }
+                let content = $vm.article.fmtType === 'markdown' ? mdEdit.value : fullEdit.txt.html();
+                if (content === '') {
+                    mdui.alert('请输入文章内容');
+                    return;
+                }
+                $vm.article.status = status;
+                clearInterval(refreshIntervalId);
+                $vm.saveArticle(function () {
+                    mdui.alert('文章发布成功', '提示', function () {
+                        setTimeout(() => {
+                            window.location.href = '/admin/articles/';
+                        }, 100);
+                    });
+                });
+            },
+            saveArticle: function (callback) {
+                let $vm = this;
+                let content = $vm.article.fmtType === 'markdown' ? mdEdit.value : fullEdit.txt.html();
+                if ($vm.article.title === '' || content === '') {
+                    return false;
+                }
+                $vm.article.content = content;
+                $vm.article.categories = $vm.article.categoryArr.join(',');
+                $vm.article.tags = $vm.article.tagArr.join(',');
+                let params = tale.copy($vm.article);
+                params.created = moment(params.createdTime, "YYYY-MM-DD HH:mm:ss").unix();
+                //删除无用属性
+                delete params.allowThumbImg;
+                delete params.createdTime;
+                delete params.categoryArr;
+                delete params.tagArr;
+                tale.put({
+                    url: '/admin/api/article',
+                    data: params,
+                    success: function (result) {
+                        if (result && result.success) {
+                            $vm.article.cid = result.payload;
+                            callback && callback();
+                        } else {
+                            mdui.alert(result.msg || '保存文章失败');
+                        }
+                    },
+                    error: function (error) {
+                        clearInterval(refreshIntervalId);
+                        console.log(error);
+                    }
+                });
+            },
+            addTag: function () {
+                let $vm = this;
+                mdui.prompt('请输入文章标签', '添加标签',
+                    function (value) {
+                        if (value.trim()) {
+                            $vm.article.tagArr.push(value.trim());
+                        } else {
+                            mdui.snackbar({message: '输入的标签为空', timeout: 1000});
+                        }
+                    },
+                    function (value) {
+                    },
+                    {confirmText: '确认', cancelText: '取消'}
+                );
+            },
+            uploadFile: function (e) {
+                let $vm = this;
+                let file = e.target.files[0];
+                if (!file.type.includes('image')) {
+                    mdui.alert('请选择图片文件');
+                    return false;
+                }
+                let data = new FormData();
+                data.append('image_up', file);
+                tale.post({
+                    url: '/admin/api/attach/upload',
+                    data: data,
+                    success: function (result) {
+                        if (result && result.success) {
+                            let imagePath = result.payload[0].fkey;
+                            let imageUrl = document.getElementById('attach_url').value + imagePath;
+                            $vm.article.thumbImg = imagePath;
+                            mdui.snackbar({message: '上传成功', timeout: 1000});
+                        } else {
+                            mdui.alert(result.msg || '上传失败');
+                        }
+                    },
+                    error: function (error) {
+                        clearInterval(refreshIntervalId);
+                        mdui.alert(error || '上传失败');
+                    }
+                });
+            },
+            switchEditor: function () {
+                let $vm = this;
+                let type = $vm.article.fmtType;
+                if ($vm.fmtType === $vm.article.fmtType) {
+                    return false;
+                }
+                let content = '';
+                if (type === 'html') {
+                    content = fullEdit.txt.html();
+                } else if (type === 'markdown') {
+                    content = mdEdit.value;
+                }
+                if (content) {
+                    mdui.snackbar({message: '请删除内容后重试', position: 'top', timeout: 2000});
+                    return false;
+                }
+                $vm.initEditor(type);
+            },
+            toList: function () {
+                window.location.href = '/admin/articles';
+            }
+        }
+    });
+    vm.$watch('article.content', function () {
+        console.log(vm.article.content);
+        vm.initEditor(vm.article.content);
+    });
+    window.onload = function () {
+        //初始化日期选择
+        document.getElementById('createdTime').flatpickr({altFormat: 'Y-m-d H:i:S', dateFormat: 'Y-m-d H:i:S', enableTime: true, enableSeconds: true, shorthandCurrentMonth: true, time_24hr: true, allowInput: false});
+        tale.loadingProgress('hide');
+    }
+</script>
+</body>
+</html>

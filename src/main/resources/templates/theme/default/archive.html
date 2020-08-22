@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    #include('./partial/head.html')
+</head>
+<body>
+<div class="main-container">
+    #include('./partial/header.html')
+    <main class="content-wrap util--m-a-4">
+        <div class="archive-box percent-p-x util--p-y-4">
+            <h4 class="archive-summary util--p-y-4">共计 ${statistic().post} 篇文章</h4>
+            <div class="archive-list">
+                #-- 分页对象 --#
+                #set(pageInfo = articles())
+                #-- 文章列表 --#
+                #set(list = pageInfo.list)
+                #for(article: list)
+                <div class="archive-item percent-p-x">
+                    #-- 当前循环的归档时间 --#
+                    #set(currentArchiveDate = fmtDate(article.created, 'yyyy-MM'))
+                    #-- 处理第一次循环 --#
+                    #if(for.index == 1)
+                    <p class="archive-date util--p-t-3">${currentArchiveDate}</p>
+                    #else
+                    #-- 处理非第一次循环 --#
+                    #set(previousArchiveDate = fmtDate(list[for.index-2].created, 'yyyy-MM'))
+                    #if(previousArchiveDate != currentArchiveDate)
+                    <p class="archive-date util--p-x-2 util--p-t-3">${currentArchiveDate}</p>
+                    #end
+                    #end
+                    <article class="archive-content util--p-x-2 util--p-y-2">
+                        <a class="archive-title" href="${(permalink(article))}">${article.title}</a>
+                        <div class="archive-meta">
+                            <div class="archive-item-date">
+                                <img class="util--m-r-1" src="${themeUrl('/img/icon/date.svg')}" alt="">
+                                <span>${fmtDate(article.created, 'MM-dd')}</span>
+                            </div>
+                            <div class="archive-item-category">
+                                <img class="util--m-r-1" src="${themeUrl('/img/icon/category.svg')}" alt="分类">
+                                <a href="">${article.category}</a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                #end
+            </div>
+        </div>
+        #include('./partial/pageNav.html', {pageInfo: pageInfo, prefix: urlPrefix})
+        #include('./partial/footer.html')
+    </main>
+</div>
+</body>
+</html>

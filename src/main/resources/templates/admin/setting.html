@@ -1,0 +1,221 @@
+<el-row>
+    <el-col :sm="24" :md="12">
+        <el-card>
+            <div slot="header"><span>站点设置</span></div>
+
+        </el-card>
+    </el-col>
+    <el-col :sm="24" :md="12">
+        <el-card>
+            <div slot="header"><span>高级选项设置</span></div>
+
+        </el-card>
+    </el-col>
+</el-row>
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!---->
+<!DOCTYPE html>
+#set(String active = 'setting')
+#set(String title = '系统设置')
+<html lang="zh-cn">
+<head>
+    #include('./partial/head.html', {active: active, title: title})
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html', {active: active, title: title})
+#include('./partial/menu.html', {active: active, title: title})
+<div class="mdui-container-fluid mdui-p-a-3">
+    <div id="app" class="mdui-row" v-cloak>
+        <div class="mdui-col-md-6 mdui-m-b-3">
+            <div class="mdui-card">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">站点设置</div>
+                </div>
+                <div class="mdui-card-content">
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">insert_link</i>
+                        <label class="mdui-textfield-label">网站地址</label>
+                        <input type="text" v-model="general.site_url" class="mdui-textfield-input" required aria-required="true">
+                        <div class="mdui-textfield-helper">请和你当前访问的域名保持一致，否则会出现渲染错误</div>
+                    </div>
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">dvr</i>
+                        <label class="mdui-textfield-label">站点标题</label>
+                        <input type="text" v-model="general.site_title" class="mdui-textfield-input" required aria-required="true">
+                    </div>
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">subtitles</i>
+                        <label class="mdui-textfield-label">站点子标题</label>
+                        <input type="text" v-model="general.site_subtitle" class="mdui-textfield-input" required aria-required="true">
+                    </div>
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">description</i>
+                        <label class="mdui-textfield-label">站点描述</label>
+                        <input type="text" v-model="general.site_description" class="mdui-textfield-input" required aria-required="true">
+                    </div>
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">text_fields</i>
+                        <label class="mdui-textfield-label">站点关键词</label>
+                        <input type="text" v-model="general.site_keywords" class="mdui-textfield-input" required aria-required="true">
+                    </div>
+                </div>
+                <div class="mdui-card-actions mdui-text-right">
+                    <button @click="saveSetting" mdui-tooltip="{content: '保存'}" class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple mdui-shadow-4">
+                        <i class="mdui-icon material-icons">save</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-col-md-6 mdui-m-b-3">
+            <div class="mdui-card">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">高级选项设置</div>
+                </div>
+                <div class="mdui-card-content">
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">delete_sweep</i>
+                        <label class="mdui-textfield-label">清理缓存</label>
+                        <input type="text" v-model="advance.cacheKey" class="mdui-textfield-input">
+                        <div class="mdui-textfield-helper">请输入缓存前缀，输入 * 删除所有缓存</div>
+                    </div>
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">visibility_off</i>
+                        <label class="mdui-textfield-label">黑名单IP列表</label>
+                        <textarea v-model="advance.blockIps" class="mdui-textfield-input"></textarea>
+                        <div class="mdui-textfield-helper">请输入黑名单IP，如：123.123.33.23,123.123.33.24</div>
+                    </div>
+                    <div class="mdui-textfield">
+                        <i class="mdui-icon material-icons">widgets</i>
+                        <label class="mdui-textfield-label">卸载插件</label>
+                        <input type="text" v-model="advance.pluginName" class="mdui-textfield-input">
+                        <div class="mdui-textfield-helper">请输入插件名，输入 * 卸载所有插件</div>
+                    </div>
+                    <div class="mdui-row">
+                        <div class="mdui-col-md-6">
+                            <div class="mdui-textfield">
+                                <i class="mdui-icon material-icons">exit_to_app</i>
+                                <label class="mdui-checkbox" style="margin-left: 56px;">
+                                    <input type="checkbox" v-model="advance.allowInstall" true-value="true" false-value="false">
+                                    <i class="mdui-checkbox-icon"></i>
+                                    允许重新安装
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mdui-col-md-6">
+                            <div class="mdui-textfield">
+                                <i class="mdui-icon material-icons">comment</i>
+                                <label class="mdui-checkbox" style="margin-left: 56px;">
+                                    <input type="checkbox" v-model="advance.allowCommentAudit" true-value="true" false-value="false">
+                                    <i class="mdui-checkbox-icon"></i>
+                                    评论需要审核
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdui-card-actions mdui-text-right">
+                    <button @click="saveAdvance" mdui-tooltip="{content: '保存'}" class="mdui-btn mdui-btn-icon mdui-btn-dense mdui-color-theme-accent mdui-ripple mdui-shadow-4">
+                        <i class="mdui-icon material-icons">save</i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            general: {},
+            advance: {}
+        },
+        beforeCreate: function () {
+            // console.log('---> beforeCreate');
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function () {
+                let $vm = this;
+                tale.get({
+                    url: '/admin/api/option',
+                    success: function (data) {
+                        //-->
+                        $vm.general.site_url = data.payload.site_url ? data.payload.site_url : '';
+                        $vm.general.site_title = data.payload.site_title ? data.payload.site_title : '';
+                        $vm.general.site_subtitle = data.payload.site_subtitle ? data.payload.site_subtitle : '';
+                        $vm.general.site_description = data.payload.site_description ? data.payload.site_description : '';
+                        $vm.general.site_keywords = data.payload.site_keywords ? data.payload.site_keywords : '';
+                        //-->
+                        $vm.advance.cacheKey = '';
+                        $vm.advance.blockIps = (data.payload.site_block_ips) ? data.payload.site_block_ips : '';
+                        $vm.advance.pluginName = '';
+                        $vm.advance.allowInstall = (data.payload.allow_install) ? data.payload.allow_install : '';
+                        $vm.advance.allowCommentAudit = (data.payload.allow_comment_audit) ? data.payload.allow_comment_audit : '';
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        alert(error || '数据加载失败');
+                    }
+                });
+            },
+            saveSetting: function () {
+                let $vm = this;
+                let param = tale.copy($vm.general);
+                let formData = new FormData();
+                for (let item in param) {
+                    formData.append(item, param[item]);
+                }
+                tale.post({
+                    url: '/admin/api/option',
+                    data: formData,
+                    success: function (result) {
+                        if (result && result.success) {
+                            mdui.snackbar({message: '保存成功', position: 'top', timeout: 2000});
+                            $vm.load();
+                        } else {
+                            mdui.snackbar({message: result.msg || '保存失败', position: 'top', timeout: 2000});
+                        }
+                    }
+                });
+            },
+            saveAdvance: function () {
+                let $vm = this;
+                let param = tale.copy($vm.advance);
+                let formData = new FormData();
+                for (let item in param) {
+                    formData.append(item, param[item]);
+                }
+                tale.put({
+                    url: '/admin/api/advance',
+                    data: formData,
+                    success: function (result) {
+                        if (result && result.success) {
+                            mdui.snackbar({message: '保存成功', position: 'top', timeout: 2000});
+                            $vm.load();
+                        } else {
+                            mdui.snackbar({message: result.msg || '保存失败', position: 'top', timeout: 2000});
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>
+

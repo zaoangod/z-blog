@@ -1,0 +1,39 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>bin</id>
+    <formats>
+        <!--<format>tar.gz</format>-->
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <!-- 指定依赖jar包输出的目录 -->
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/lib</outputDirectory><!-- 指定将这些依赖包打到包里lib目录下 -->
+            <scope>runtime</scope><!-- 用于管理依赖的部署, runtime 表示只在运行时使用 -->
+            <excludes>
+                <exclude>${project.groupId}:${project.artifactId}</exclude><!-- 排除自身jar包 -->
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>${project.groupId}:${project.artifactId}</include><!-- 只包含自身jar包 -->
+            </includes>
+        </dependencySet>
+    </dependencySets>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/main/resources/</directory><!-- 指定归档文件(要打的jar包)要包含的目录 resources(下的文件及文件夹) -->
+            <outputDirectory>resources</outputDirectory><!-- 指定要将当前目录 resources 放在归档文件(要打的jar包) resources 目录下 -->
+        </fileSet>
+        <fileSet>
+            <directory>bin/</directory>
+            <outputDirectory></outputDirectory>
+        </fileSet>
+    </fileSets>
+
+</assembly>

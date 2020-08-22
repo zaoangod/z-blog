@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+#set(String active = 'home')
+#set(String title = '个人设置')
+<html>
+<head>
+    #include('./partial/head.html', {active: active, title: title})
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html', {active: active, title: title})
+#include('./partial/menu.html', {active: active, title: title})
+<div class="mdui-container-fluid mdui-p-t-2">
+    <h3 class="mdui-text-color-theme">${title}</h3>
+    <div class="mdui-row">
+        <div class="mdui-col-md-6">
+            <div class="mdui-card mdui-m-a-2">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">个人信息</div>
+                </div>
+                <div class="mdui-card-content">
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">account_box</i>
+                        <label class="mdui-textfield-label">账号</label>
+                        <input type="text" class="mdui-textfield-input" value="${login_user.username}" readonly="readonly" disabled="disabled">
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">account_circle</i>
+                        <label class="mdui-textfield-label">姓名</label>
+                        <input type="text" class="mdui-textfield-input" id="screenName" name="screenName" value="${login_user.screenName}" required aria-required="true">
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">email</i>
+                        <label class="mdui-textfield-label">邮箱</label>
+                        <input type="text" class="mdui-textfield-input" id="email" name="email" value="${login_user.email}" required aria-required="true">
+                    </div>
+                </div>
+                <div class="mdui-card-actions mdui-text-right">
+                    <button type="button" class="mdui-btn mdui-ripple mdui-m-r-2 mdui-m-b-2" onclick="saveSetting();">保存信息</button>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-col-md-6">
+            <div class="mdui-card mdui-m-a-2">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">修改密码</div>
+                </div>
+                <div class="mdui-card-content">
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">security</i>
+                        <label class="mdui-textfield-label">输入旧密码</label>
+                        <input class="mdui-textfield-input" type="password" name="old_password" id="old_password" required aria-required="true">
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">security</i>
+                        <label class="mdui-textfield-label">输入新密码</label>
+                        <input class="mdui-textfield-input" type="password" name="password" id="new_password" required aria-required="true">
+                    </div>
+                    <div class="mdui-textfield mdui-textfield-floating-label">
+                        <i class="mdui-icon material-icons">security</i>
+                        <label class="mdui-textfield-label">确认新密码</label>
+                        <input class="mdui-textfield-input" type="password" name="repass" id="re_password" required aria-required="true">
+                    </div>
+                </div>
+                <div class="mdui-card-actions mdui-text-right">
+                    <button type="button" class="mdui-btn mdui-ripple mdui-m-r-2 mdui-m-b-2" onclick="updatePassword();">设置密码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * 保存个人信息
+     */
+    function saveSetting() {
+        let screenName = document.getElementById('screenName').value;
+        let email = document.getElementById('email').value;
+        let param = new FormData();
+        param.append('email', email);
+        param.append('screenName', screenName);
+        tale.post({
+            url: '/admin/profile',
+            data: param,
+            success: function (result) {
+                if (result && result.success) {
+                    mdui.snackbar({message: '保存成功', position: 'top'});
+                } else {
+                    mdui.snackbar({message: result.msg || '保存失败', position: 'top'});
+                }
+            }
+        });
+    }
+
+    /**
+     * 修改密码
+     */
+    function updatePassword() {
+        let old_password = document.getElementById('old_password').value;
+        let new_password = document.getElementById('new_password').value;
+        let re_password = document.getElementById('re_password').value;
+        if (new_password !== re_password) {
+            mdui.snackbar({message: '两次密码不一致', position: 'top'});
+            return false;
+        }
+        //
+        let param = new FormData();
+        param.append('old_password', old_password);
+        param.append('password', new_password);
+        tale.post({
+            url: '/admin/password',
+            data: param,
+            success: function (result) {
+                if (result && result.success) {
+                    mdui.snackbar({message: '修改成功', position: 'top'});
+                } else {
+                    mdui.snackbar({message: result.msg || '修改失败', position: 'top'});
+                }
+            }
+        });
+    }
+
+    window.onload = () => {
+        tale.loadingProgress('hide');
+    }
+</script>
+</body>
+</html>

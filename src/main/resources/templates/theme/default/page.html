@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+#set(commentCount = commentCount(article))
+<html lang="zh-CN">
+<head>
+    #include('./partial/head.html')
+</head>
+<body>
+<div class="main-container">
+    #include('./partial/header.html')
+    <main class="content-wrap">
+        <div class="article-list">
+            <article class="article-item">
+                <div class="article-title-container percent-p-x util--p-t-4 util--p-b-2">
+                    <header class="article-title">
+                        <a href="${pagePrefix}">${article.title}</a>
+                    </header>
+                </div>
+                <div class="article-content percent-m-x util--p-y-2">${content(article.content, article.fmtType)}</div>
+                <div class="support-author util--p-y-4">
+                    <button id="donate" class="btn-donate util--m-y-1">
+                        <img src="${themeUrl('/img/icon/donate.svg')}" alt="">
+                        赞赏
+                    </button>
+                    <span>如果觉得我的文章对你有用，请随意赞赏</span>
+                    <div id="QR" class="QR-container util--m-y-2">
+                        <div class="QR-code">
+                            <img src="${themeUrl('/img/RQ_WXPAY.png')}" alt="">
+                            <span>微信</span>
+                        </div>
+                        <div class="QR-code">
+                            <img src="${themeUrl('/img/RQ_ALIPAY.png')}" alt="">
+                            <span>支付宝</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+        #include('./partial/comment.html', {article: article, limit: 20})
+        #include('./partial/footer.html')
+    </main>
+</div>
+</body>
+</html>

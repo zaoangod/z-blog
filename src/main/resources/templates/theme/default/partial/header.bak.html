@@ -1,0 +1,73 @@
+<aside class="disable-user-select aside-wrap">
+    <div class="overlay"></div>
+    <div class="nav-box">
+        <img src="${themeUrl('/img/head.png')}" alt="${siteTitle()}"/>
+        <!--<img src="${avatar('xxxxx@qq.com')}" alt="${siteTitle()}"/>-->
+        <a class="site-title util--m-y-1" href="${siteUrl()}">${siteTitle()}</a>
+        <p class="site-subtitle util--m-y-1">${siteSubtitle()}</p>
+
+        <ul class="header-menu util--m-y-2">
+            <li><a href="/">首页</a></li>
+            <li><a href="/archive">归档</a></li>
+            <li><a href="/category">分类</a></li>
+            <li><a href="/tag">标签</a></li>
+            <li><a href="/page/links">友链</a></li>
+            <li><a href="/page/about">关于</a></li>
+        </ul>
+
+        <div class="header-social">
+            <a target="_blank" href="//${themeOption('social_github','#')}">
+                <img title="github" src="${themeUrl('/img/social/github.svg')}">
+            </a>
+            <a target="_blank" href="//${themeOption('social_weibo','')}">
+                <img title="weibo" src="${themeUrl('/img/social/weibo.svg')}">
+            </a>
+            <a target="_blank" href="//${siteOption('social_zhihu','#')}">
+                <img title="zhihu" src="${themeUrl('/img/social/zhihu.svg')}">
+            </a>
+        </div>
+
+    </div>
+</aside>
+<!-- mobile -->
+<!--
+<div class="site-info" style="display: none;">
+    <a href="${siteUrl()}" style="font-size: 1.25rem;">${siteTitle()}</a>
+    <img id="showBar" src="${themeUrl('/img/icon/bar.svg')}">
+</div>
+<aside id="mobileBar" class="aside-wrap-m disable-user-select" style="display: none;">
+    <div class="overlay"></div>
+    <div class="nav-box-m">
+        <img src="${themeUrl('/img/head.png')}" alt="${siteTitle()}"/>
+        <a class="site-title util&#45;&#45;m-y-1" href="${siteUrl()}">${siteTitle()}</a>
+        <p class="site-subtitle">${siteSubtitle()}</p>
+        <nav class="header-menu-m util&#45;&#45;m-y-1">
+            <a href="/">首页</a>
+            <a href="/archive">归档</a>
+            <a href="/category">分类</a>
+            <a href="/tag">标签</a>
+            <a href="/page/links">友链</a>
+            <a href="/page/about">关于</a>
+        </nav>
+        <nav class="header-nav">
+            <ul class="social-list">
+                <li>
+                    <a target="_blank" href="//${siteOption('social_github','#')}">
+                        <img title="github" src="${themeUrl('/static/img/github.svg')}">
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="//weibo.com/${themeOption('social_weibo')}">
+                        <img title="weibo" src="${themeUrl('/static/img/weibo.svg')}">
+                    </a>
+                </li>
+                <li>
+                    <a target="_blank" href="//${siteOption('social_zhihu','#')}">
+                        <img title="zhihu" src="${themeUrl('/static/img/zhihu.svg')}">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>
+-->

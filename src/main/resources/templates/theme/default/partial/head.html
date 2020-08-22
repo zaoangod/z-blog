@@ -1,0 +1,71 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<!--IE 8浏览器的页面渲染方式-->
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<!--默认使用极速内核：针对国内浏览器产商-->
+<meta name="renderer" content="webkit">
+<!--chrome Android 地址栏颜色-->
+<!--<meta name="theme-color" content="#7266ba"/>-->
+<!--<title>${pageTitle()}</title>-->
+<title>首页</title>
+<link rel="shortcut icon" href="${themeUrl()+'/img/favicon.png'}"/>
+<link rel="apple-touch-icon" href="${themeUrl()+'/img/apple-touch-icon.png'}"/>
+<meta http-equiv="Cache-Control" content="no-transform"/>
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<meta name="keywords" content="${pageKeyword()}"/>
+<meta name="description" content="${pageDesc()}"/>
+<!--<meta content="${_csrf_token}" name="csrf_token"/>-->
+<!-- css -->
+<link href="${themeUrl()+'/css/base.css'}" rel="stylesheet">
+<!--<link href="${themeUrl()+'/css/style.css'}" rel="stylesheet">-->
+<link href="${themeUrl()+'/css/header.css'}" rel="stylesheet">
+<link href="${themeUrl()+'/css/content.css'}" rel="stylesheet">
+<link href="${themeUrl()+'/css/utils.css'}" rel="stylesheet">
+<link href="${themeUrl()+'/css/highlight/monokai-sublime.css'}" rel="stylesheet">
+<!--<link href="${themeUrl()+'/css/header.css'}" rel="stylesheet">-->
+<!--<link href="${themeUrl()+'/css/responsive.css'}" rel="stylesheet">-->
+<!---->
+<link href="${themeUrl()+'/lib/prism/prism.css'}" rel="stylesheet">
+<script src="${themeUrl()+'/lib/prism/prism.js'}"></script>
+<style>
+    pre[class*="language-"].line-numbers {
+        position: relative;
+        padding-left: 3.8em;
+        counter-reset: linenumber;
+    }
+
+    pre[class*="language-"].line-numbers > code {
+        position: relative;
+        white-space: inherit;
+    }
+
+    .line-numbers .line-numbers-rows {
+        position: absolute;
+        pointer-events: none;
+        top: 0;
+        font-size: 100%;
+        left: -3.8em;
+        width: 3em; /* works for line-numbers below 1000 lines */
+        letter-spacing: -1px;
+        border-right: 1px solid #999;
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+    }
+
+    .line-numbers-rows > span {
+        display: block;
+        counter-increment: linenumber;
+    }
+
+    .line-numbers-rows > span:before {
+        content: counter(linenumber);
+        color: #999;
+        display: block;
+        padding-right: 0.8em;
+        text-align: right;
+    }
+</style>

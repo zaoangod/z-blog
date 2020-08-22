@@ -1,0 +1,112 @@
+<el-row>
+    <el-col :span="24">
+
+        <el-tabs type="border-card" style="margin-bottom: 1rem;">
+            <el-tab-pane label="搜索">
+                <el-form :inline="true" :model="pageParam">
+                    <el-form-item label="标题" style="margin: 0.5rem;">
+                        <el-input v-model="pageParam.fName" placeholder="输入附件标题"></el-input>
+                    </el-form-item>
+                    <el-form-item label="类型" style="margin: 0.5rem;">
+                        <el-select v-model="pageParam.fType" clearable placeholder="选择附件分类">
+                            <el-option label="item.name" value="item.name"></el-option>
+                            <!--<el-option v-for="(item, index) in category" :label="item.name" :value="item.name"></el-option>-->
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item style="margin: 0.5rem;">
+                        <el-button type="primary" size="medium" icon="el-icon-search" @click="load(1)">搜索</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-tab-pane>
+            <el-tab-pane label="上传">
+                <el-upload drag action="https://jsonplaceholder.typicode.com/posts/" style="text-align: center;">
+                    <i class="el-icon-upload" style="margin: 0.5rem;"></i>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                </el-upload>
+            </el-tab-pane>
+        </el-tabs>
+
+        <el-card>
+            <el-table :data="pageInfo.list" style="width: 100%;">
+                <el-table-column prop="fName" label="名称"></el-table-column>
+                <el-table-column prop="fType" label="类型" align="center"></el-table-column>
+                <el-table-column prop="created" label="创建时间" align="center"></el-table-column>
+                <el-table-column prop="fKey" label="链接" align="center"></el-table-column>
+                <el-table-column label="操作" align="center">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="del(scope.row.id)"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+        #include('./partial/pageNav.html')
+    </el-col>
+</el-row>
+<script>
+    let main = {
+        data() {
+            return {
+                pageParam: {page: 1, fName: null, fType: null},
+                pageInfo: {},
+            };
+        },
+        mounted: function () {
+            this.loadOnce();
+            this.load();
+        },
+        methods: {
+            filterPageParam: function () {
+                let $vm = this;
+                let param = $vm.pageParam;
+                for (let i in param) {
+                    if (param[i] === '') {
+                        $vm.pageParam[i] = null;
+                    }
+                }
+            },
+            loadOnce: function () {
+                let $vm = this;
+            },
+            load: function (pageNum) {
+                let $vm = this;
+                $vm.pageParam.page = pageNum;
+                $vm.filterPageParam();
+                tale.get({
+                    url: '/a/i/attach',
+                    data: $vm.pageParam,
+                    success: (data) => {
+                        $vm.pageInfo = data.payload;
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    }
+                });
+            },
+            del: function (cid) {
+                console.log(cid);
+                let $vm = this;
+                this.$confirm('此操作将永久删除该附件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    tale.delete({
+                        url: '/a/i/attach/' + cid,
+                        success: (data) => {
+                            $vm.load(1);
+                            this.$notify({type: 'success', title: '提示', message: '附件删除成功', duration: 2500});
+                        },
+                        error: (error) => {
+                            console.log(error);
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            }
+        }
+    };
+</script>

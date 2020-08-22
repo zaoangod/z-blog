@@ -1,0 +1,150 @@
+<el-row>
+    <el-col :span="24">
+
+        <el-card style="margin-bottom: 1rem;">
+            <el-form :inline="true" :model="pageParam">
+                <el-form-item label="状态" style="margin: 0.5rem;">
+                    <el-select v-model="pageParam.status" clearable placeholder="评论状态">
+                        <el-option label="已审核" value="approved"></el-option>
+                        <el-option label="未审核" value="no_audit"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item style="margin: 0.5rem;">
+                    <el-button type="primary" size="medium" icon="el-icon-search" @click="load(1)">搜索</el-button>
+                </el-form-item>
+            </el-form>
+        </el-card>
+
+        <el-card style="margin-bottom: 1rem;">
+            <el-table :data="pageInfo.list" style="width: 100%;">
+                <el-table-column type="expand">
+
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline style="width: 100%;">
+                            <el-form-item style="width: 100%;margin: 0;" label="评论内容"><span>{{props.row.content}}</span></el-form-item>
+                            <el-form-item style="width: 49%;margin: 0;" label="评论者邮件"><span>{{props.row.mail}}</span></el-form-item>
+                            <el-form-item style="width: 49%;margin: 0;" label="评论者网址"><span>{{props.row.url}}</span></el-form-item>
+                            <el-form-item style="width: 49%;margin: 0;" label="评论IP地址"><span>{{props.row.ip}}</span></el-form-item>
+                            <el-form-item style="width: 49%;margin: 0;" label="评论客户端"><span>{{props.row.agent}}</span></el-form-item>
+                        </el-form>
+                    </template>
+
+                    <!--substring(7,10)-->
+                </el-table-column>
+                <el-table-column prop="content" label="评论内容" :formatter="subContent"></el-table-column>
+                <el-table-column prop="author" label="评论人" align="center" width="140"></el-table-column>
+                <el-table-column prop="created" label="评论时间" align="center" width="100">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top">
+                            <p style="text-align: center;">{{ fmtDate(scope.row.created, 2) }}</p>
+                            <div slot="reference" class="name-wrapper">{{ fmtDate(scope.row.created, 1) }}</div>
+                        </el-popover>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="status" label="状态" align="center" width="100">
+                    <template slot-scope="scope">
+                        <el-tag size="medium" type="primary" v-if="scope.row.status === 'approved'">已审核</el-tag>
+                        <el-tag size="medium" type="info" v-if="scope.row.status === 'no_audit'">未审核</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="120">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="primary" icon="el-icon-edit" circle @click="edit(scope.row.mid)" style="margin: 2px;"></el-button>
+                        <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="del(scope.row.mid)" style="margin: 2px;"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+    </el-col>
+</el-row>
+<script>
+    let main = {
+        data() {
+            return {
+                pageInfo: {},
+                pageParam: {page: 1, status: null}
+            };
+        },
+        mounted: function () {
+            this.loadOnce();
+            this.load();
+        },
+        methods: {
+            filterPageParam: function () {
+                let $vm = this;
+                let param = $vm.pageParam;
+                for (let i in param) {
+                    if (param[i] === '') {
+                        $vm.pageParam[i] = null;
+                    }
+                }
+            },
+            subContent: function (row, column, cellValue, index) {
+                return cellValue.substring(0, 40);
+            },
+            fmtDate: function (timestamp, fmt) {
+                let dateObj = new Date(timestamp);
+                let date = dateObj.getFullYear() + '-' + dateObj.getMonth() + 1 + '-' + dateObj.getDate();
+                let dateTime = date + ' ' + dateObj.getHours() + ':' + dateObj.getMinutes() + ':' + dateObj.getSeconds();
+                return fmt === 1 ? date : dateTime;
+            },
+            loadOnce: function () {
+                let $vm = this;
+            },
+            load: function (pageNum) {
+                let $vm = this;
+                $vm.pageParam.page = pageNum;
+                $vm.filterPageParam();
+                tale.get({
+                    url: '/a/i/comment',
+                    data: $vm.pageParam,
+                    success: (data) => {
+                        $vm.pageInfo = data.payload;
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    }
+                });
+            },
+            edit: function (id) {
+                let $vm = this;
+                tale.get({
+                    url: '/a/i/meta/' + id,
+                    success: (data) => {
+                        console.log(data);
+                        $vm.metaForm = data.payload;
+                        $vm.dialogEditVisible = true;
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    }
+                });
+            },
+            del: function (cid) {
+                console.log(cid);
+                let $vm = this;
+                this.$confirm('此操作将永久删除该项, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    tale.delete({
+                        url: '/a/i/meta/' + cid,
+                        success: (data) => {
+                            $vm.load(1);
+                            this.$notify({type: 'success', title: '提示', message: '删除成功', duration: 2500});
+                        },
+                        error: (error) => {
+                            console.log(error);
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            }
+        }
+    };
+</script>

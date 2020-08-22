@@ -1,0 +1,17 @@
+<el-row type="flex" justify="space-between" class="row-bg" style="line-height: 60px;">
+    <el-col :span="12">
+        <div class="grid-content bg-purple" style="text-align: left;">后台管理</div>
+    </el-col>
+    <el-col :span="12">
+        <div class="grid-content bg-purple-light" style="text-align: right;">
+            <el-dropdown>
+                <i class="material-icons" style="line-height: inherit;cursor: pointer;">more_vert</i>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>预览站点</el-dropdown-item>
+                    <el-dropdown-item>个人设置</el-dropdown-item>
+                    <el-dropdown-item>退出</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+        </div>
+    </el-col>
+</el-row>

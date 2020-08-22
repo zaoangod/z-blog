@@ -1,0 +1,54 @@
+<mu-paper :z-depth="3" class="util--m-a-2">
+    <mu-data-table stripe :columns="columns" :data="pageInfo.list">
+        <template slot-scope="scope">
+            <td>{{scope.row.title}}</td>
+            <td>{{scope.row.created}}</td>
+            <td>{{scope.row.hits}}</td>
+            <td>{{scope.row.categories}}</td>
+            <td>{{scope.row.status}}</td>
+            <td class="is-center">
+                <mu-button icon color="primary">
+                    <mu-icon value="grade"></mu-icon>
+                </mu-button>
+            </td>
+        </template>
+    </mu-data-table>
+</mu-paper>
+#include('./partial/pageNav.html')
+<script>
+    let main = {
+        data() {
+            return {
+                pageParam: {type: 'page', page: 1},
+                columns: [
+                    {title: '标题', align: 'left', name: 'title'},
+                    {title: '发布时间', align: 'left', name: 'created'},
+                    {title: '浏览量', align: 'left', name: 'hits'},
+                    {title: '状态', align: 'left', name: 'status'},
+                    {title: '操作', align: 'center', name: '', cellAlign: 'center'}
+                ],
+                pageInfo: {},
+                category: []
+            };
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function (pageNum) {
+                let $vm = this;
+                $vm.pageParam.page = pageNum;
+                tale.get({
+                    url: '/a/i/article',
+                    data: $vm.pageParam,
+                    success: (data) => {
+                        $vm.pageInfo = data.payload;
+                    },
+                    error: (error) => {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+    };
+</script>

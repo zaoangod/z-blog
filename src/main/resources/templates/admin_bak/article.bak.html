@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    #include('./partial/head.html', {active: 'article', title: '文章管理'})
+</head>
+<body>
+<div id="app" v-cloak>
+    <mu-container fluid style="padding-right:0;padding-left:0;">
+        #include('./partial/header.html',{active:active, title: title})
+        #include('./partial/menu.html',{active: active, title: title})
+        <!--<div class="mdui-container-fluid mdui-m-a-3">
+            <div class="mdui-row mdui-shadow-2 mdui-p-a-1 mdui-color-white">
+                <div class="mdui-col-sm-5 mdui-col-md-3">
+                    <div class="mdui-textfield">
+                        <input v-model="pageParam.title" class="mdui-textfield-input" type="text" placeholder="文章名称"/>
+                    </div>
+                </div>
+                <div class="mdui-col-sm-3 mdui-col-md-2">
+                    <div class="mdui-textfield">
+                        <input v-model="pageParam.categories" readonly mdui-dialog="{target: '#categoryDialog'}" class="mdui-textfield-input" type="text" placeholder="选择分类"/>
+                    </div>
+                </div>
+                <div class="mdui-col-sm-3 mdui-col-md-2">
+                    <div class="mdui-textfield" style="overflow: visible!important;">
+                        <select v-model="pageParam.status" class="mdui-select" mdui-select="{position: 'bottom'}">
+                            <option value="">发布状态</option>
+                            <option value="publish">已发布</option>
+                            <option value="draft">草稿</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mdui-col-sm-1 mdui-col-md-5">
+                    <div style="padding-top: 16px;padding-bottom: 8px;">
+                        <button @click="load(1)" class="mdui-btn mdui-btn-icon" mdui-tooltip="{content: '查询'}">
+                            <i class="mdui-icon material-icons">search</i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mdui-row mdui-m-y-2">
+                <div class="mdui-col-xs-12 mdui-p-x-0">
+                    <div class="mdui-table-fluid mdui-shadow-2">
+                        <table class="mdui-table mdui-table-hoverable">
+                            <thead>
+                            <tr>
+                                <th>标题</th>
+                                <th>发布时间</th>
+                                <th>浏览量</th>
+                                <th>分类</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="dataTBody">
+                            <tr v-for="item in pageInfo.list">
+                                <td @click="editArticle(item.cid)">{{ item.title | truncate(30,'...') }}</td>
+                                <td>{{ item.created | formatUnix }}</td>
+                                <td>{{ item.hits }}</td>
+                                <td>{{ item.categories }}</td>
+                                <td>
+                                    <div class="mdui-chip">
+                                        <span v-show="item.status == 'publish'" class="mdui-chip-title">已发布</span>
+                                        <span v-show="item.status == 'draft'" class="mdui-chip-title">草稿</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button @click="editArticle(item.cid)" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '编辑'}">
+                                        <i class="mdui-icon material-icons">edit</i>
+                                    </button>
+                                    <button @click="deleteArticle(item.cid)" class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '删除'}">
+                                        <i class="mdui-icon material-icons">delete</i>
+                                    </button>
+                                    <a v-show="item.status == 'publish'" :href="'${siteUrl()}' + item.url" target="_blank" style="color: inherit;">
+                                        <button class="mdui-btn mdui-btn-icon mdui-ripple action-btn mdui-color-grey-200" mdui-tooltip="{content: '预览'}">
+                                            <i class="mdui-icon material-icons">remove_red_eye</i>
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    #--
+                    #include('./partial/pageNav.html')
+                    --#
+                </div>
+            </div>
+
+        </div>-->
+    </mu-container>
+</div>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            pageInfo: {},
+            pageParam: {type: 'post', page: 1, title: null, status: null, category: null},
+            category: []
+        },
+        beforeCreate: function () {
+            console.log('---> beforeCreate');
+        },
+        mounted: function () {
+            this.loadOnce();
+            this.load(1);
+        },
+        updated: function () {
+        },
+        methods: {
+            loadOnce: function () {
+                let $vm = this;
+                tale.get({
+                    url: '/a/i/category',
+                    success: function (data) {
+                        $vm.category = data.payload;
+                        console.log(data)
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            },
+            load: function (page = 1) {
+                let $vm = this;
+                tale.get({
+                    url: '/a/i/article',
+                    data: $vm.pageParam,
+                    success: function (data) {
+                        $vm.pageInfo = data.payload;
+                        console.log(data);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+                $vm.pageParam.page = page;
+            },
+            deleteArticle: function (cid) {
+                let $vm = this;
+                mdui.confirm('确定删除该文章吗?', '警告',
+                    function () {
+                        tale.post({
+                            url: '/admin/api/article/delete/' + cid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    $vm.load(1);
+                                } else {
+                                }
+                            }
+                        });
+                    },
+                    function () {
+                    },
+                    {confirmText: '确定', cancelText: '取消'}
+                );
+            },
+            editArticle: function (cid) {
+                window.location.href = '/admin/article/edit/' + cid;
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

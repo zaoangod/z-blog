@@ -1,0 +1,158 @@
+<el-card>
+    <div slot="header"><span>文章信息</span></div>
+    <el-row :gutter="10">
+        <el-col :sm="24" :md="12" style="padding: 8px;">
+            <el-input v-model="article.title" placeholder="文章标题"></el-input>
+        </el-col>
+        <el-col :sm="24" :md="12" style="padding: 8px;">
+            <el-input v-model="article.slug" placeholder="自定义访问路径(默认文章ID)"></el-input>
+        </el-col>
+        <el-col :sm="24" :md="12" style="padding: 8px;">
+            <el-select v-model="article.tag" clearable multiple filterable allow-create default-first-option placeholder="请选择文章标签" style="width: 100%">
+                <el-option v-for="item in tags" :key="item.name" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :sm="24" :md="12" style="padding: 8px;">
+            <el-select v-model="article.category" clearable filterable placeholder="请选择文章分类" style="width: 100%;">
+                <el-option v-for="item in categories" :key="item.name" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+        </el-col>
+        <el-col :sm="24" :md="12" style="padding: 8px;">
+            <el-date-picker v-model="article.created" type="datetime" :default-value="article.created" placeholder="发布日期" style="width: 100%;"></el-date-picker>
+        </el-col>
+        <el-col :sm="24" :md="6" style="padding: 8px;">
+            <el-checkbox label="备选项1" border v-model="article.allowComment" style="width: 100%;">允许评论</el-checkbox>
+        </el-col>
+        <el-col :sm="24" :md="6" style="padding: 8px;">
+            <el-select v-model="editorType" placeholder="编辑器类型" style="width: 100%;" @change="init">
+                <el-option key="MD" label="MD编辑器" value="MD"></el-option>
+                <el-option key="js" label="JS编辑器" value="js"></el-option>
+            </el-select>
+        </el-col>
+    </el-row>
+</el-card>
+
+<el-card style="margin-top: 1rem;">
+    <div slot="header"><span>文章内容</span></div>
+    <div id="editor"></div>
+    <el-dropdown @command="publish" style="float: right;margin: 1rem;">
+        <el-button type="primary" icon="el-icon-document-checked" circle></el-button>
+        <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="draft">存为草稿</el-dropdown-item>
+            <el-dropdown-item command="publish">发布文章</el-dropdown-item>
+        </el-dropdown-menu>
+    </el-dropdown>
+</el-card>
+<script>
+    let editor;
+    let main = {
+        data() {
+            return {
+                editorType: 'MD',
+                tags: [],
+                categories: [],
+                article: {
+                    cid: '',
+                    title: '测试文章标题',
+                    slug: 'test',
+                    created: new Date().getTime(),//Number(new Date().getTime().toString().slice(0, 10)),
+                    modified: '',
+                    content: '',
+                    type: 'post',
+                    fmtType: 'markdown',
+                    thumbImg: '',
+                    tag: '',
+                    category: '',
+                    status: '',
+                    commentNum: '',
+                    allowComment: true
+                },
+            };
+        },
+        mounted: function () {
+            this.init();
+            this.loadOnce();
+            this.load();
+        },
+        methods: {
+            loadOnce: function () {
+                let $vm = this;
+                //获取分类列表
+                tale.get({
+                    url: '/a/i/meta',
+                    data: {type: 'category'},
+                    success: function (data) {
+                        $vm.categories = data.payload;
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+                //获取标签列表
+                tale.get({
+                    url: '/a/i/meta',
+                    data: {type: 'tag'},
+                    success: function (data) {
+                        $vm.tags = data.payload;
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            },
+            load: function (pageNum) {
+            },
+            init: function () {
+                //初始化编辑器容器
+                document.getElementById('editor').innerHTML = '';
+                let $vm = this;
+                let editorType = $vm.editorType;
+                if (editorType === 'MD') {
+                    //初始化MD编辑器
+                    let textarea = document.createElement('textarea');
+                    textarea.id = 'mdEditor';
+                    document.getElementById('editor').appendChild(textarea);
+                    editor = Mditor.fromTextarea(document.getElementById('mdEditor'));
+                } else {
+                    //初始化editorjs
+                    editor = editorjsStart('editor', []);
+                }
+            },
+            publish: function (status) {
+                let $vm = this;
+                $vm.article.status = status;
+                let title = $vm.article.title.trim();
+                if (title === '') {
+                    this.$notify({title: '警告', message: '请输入文章标题', type: 'warning'});
+                    return;
+                }
+                $vm.article.content = $vm.article.fmtType === 'markdown' ? editor.value : '';
+                if ($vm.article.content === '') {
+                    this.$notify({title: '警告', message: '请输入文章内容', type: 'warning'});
+                    return;
+                }
+                //处理时间
+                $vm.article.created = $vm.article.created.toString().slice(0, 10);
+                let param = new URLSearchParams();
+                let article = $vm.article;
+                for (let i in article) {
+                    param.append(i, article[i]);
+                }
+                tale.post({
+                    url: '/a/i/article',
+                    data: param,
+                    success: function (result) {
+                        let title = result.success ? '成功' : '失败';
+                        let message = '文章保存' + result.success ? '成功' : '失败';
+                        let type = result.success ? 'success' : 'error';
+                        $vm.$notify({title: title, message: message, type: type, duration: 2500});
+                        console.log(result)
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            },
+        }
+    };
+</script>

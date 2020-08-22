@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+#set(String active = 'categories')
+#set(String title = '分类/标签管理')
+#set(String has_sub = 'other')
+<html>
+<head>
+    #include('./partial/head.html', {active: active, title: title, has_sub: has_sub})
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-loaded mdui-theme-primary-white mdui-theme-accent-pink mdui-color-grey-100">
+#include('./partial/header.html', {active: active, title: title})
+#include('./partial/menu.html', {has_sub: has_sub, active: active, title: title})
+<div id="app" v-cloak class="mdui-container-fluid mdui-p-a-3">
+    <div class="mdui-row">
+        <div class="mdui-col-sm-12 mdui-col-md-6 mdui-col-lg-6 mdui-m-b-2">
+            <div class="mdui-card mdui-shadow-2" style="overflow: visible;">
+                <div class="mdui-card-primary">
+                    <div class="mdui-row">
+                        <div class="mdui-col-xs-6 mdui-text-left">
+                            <div class="mdui-card-primary-title">分类列表</div>
+                        </div>
+                        <div class="mdui-col-xs-6 mdui-text-right">
+                            <button class="mdui-btn mdui-btn-icon mdui-btn-raised mdui-btn-dense mdui-color-theme-accent mdui-ripple mdui-shadow-6" @click="saveCategory('')">
+                                <i class="mdui-icon material-icons">add</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mdui-divider"></div>
+                <div class="mdui-card-content">
+                    <div class="mdui-chip mdui-shadow-2 mdui-m-a-1" v-for="(item, index) in categories">
+                        <span class="mdui-chip-title" v-if="item.name == '默认分类'">{{ item.name }} ({{ item.count }})</span>
+                        <span class="mdui-chip-title" v-else :mdui-menu="'{target: '+'\'#categoryAction'+item.mid+'\'}'">
+                            {{ item.name }} ({{ item.count }})
+                        </span>
+                        <span class="mdui-chip-delete" v-if="item.name != '默认分类'">
+                            <i class="mdui-icon material-icons">more_vert</i>
+                        </span>
+                        <ul v-if="item.name != '默认分类'" :id="'categoryAction'+item.mid" class="mdui-menu">
+                            <li class="mdui-menu-item">
+                                <a href="javascript:void(0);" class="mdui-ripple" @click="editCategory(index)">
+                                    <i class="mdui-menu-item-icon mdui-icon material-icons">mode_edit</i>修改
+                                </a>
+                            </li>
+                            <li class="mdui-menu-item">
+                                <a href="javascript:void(0);" class="mdui-ripple" @click="deleteCategory(item.mid)">
+                                    <i class="mdui-menu-item-icon mdui-icon material-icons">delete_forever</i>删除
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mdui-col-sm-12 mdui-col-md-6 mdui-col-lg-6 mdui-m-b-2">
+            <div class="mdui-card mdui-shadow-2">
+                <div class="mdui-card-primary">
+                    <div class="mdui-card-primary-title">标签列表</div>
+                </div>
+                <div class="mdui-divider"></div>
+                <div class="mdui-card-content" v-if="tags">
+                    <div class="mdui-chip mdui-shadow-2 mdui-m-a-1" v-for="item in tags">
+                        <span class="mdui-chip-title">{{ item.name }} ({{ item.count }})</span>
+                        <span class="mdui-chip-delete" @click="deleteCategory(item.mid)"><i class="mdui-icon material-icons">cancel</i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let vm = new Vue({
+        el: '#app',
+        data: {
+            mid: '',
+            categories: [],
+            tags: []
+        },
+        beforeCreate: function () {
+            // console.log('---> beforeCreate');
+        },
+        mounted: function () {
+            this.load();
+        },
+        methods: {
+            load: function () {
+                let $vm = this;
+                tale.get({
+                    url: '/admin/api/category',
+                    success: function (data) {
+                        let categories = data.payload;
+                        if (categories) {
+                            $vm.categories = categories;
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+                tale.get({
+                    url: '/admin/api/tag',
+                    success: function (data) {
+                        let tags = data.payload;
+                        if (tags) {
+                            $vm.tags = tags;
+                        }
+                    },
+                    error: function (error) {
+                        console.log(error);
+                        mdui.alert(error || '数据加载失败');
+                    }
+                });
+            },
+            saveCategory: function (defaultValue = '') {
+                let $vm = this;
+                mdui.prompt('请输入分类名称:', '保存',
+                    function (value) {
+                        if (value === '') {
+                            mdui.alert('请输入分类名称');
+                            return;
+                        }
+                        tale.post({
+                            url: '/admin/api/category',
+                            data: {mid: $vm.mid, cname: value},
+                            success: function (result) {
+                                if (result && result.success) {
+                                    mdui.snackbar({message: '保存成功', position: 'bottom'});
+                                    $vm.mid = '';
+                                    $vm.load();
+                                } else {
+                                    mdui.alert(result.msg || '保存失败');
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    },
+                    function (value) {
+                    },
+                    {defaultValue: defaultValue, confirmText: '确认', cancelText: '取消'}
+                );
+            },
+            editCategory: function (index) {
+                let $vm = this;
+                let item = this.categories[index];
+                this.mid = item.mid;
+                $vm.saveCategory(item.name);
+            },
+            deleteCategory: function (mid) {
+                let $vm = this;
+                mdui.confirm('确定删除该项吗?', '删除',
+                    function () {
+                        tale.delete({
+                            url: '/admin/api/category/' + mid,
+                            success: function (result) {
+                                if (result && result.success) {
+                                    mdui.snackbar({message: '删除成功', position: 'bottom'});
+                                    $vm.load();
+                                } else {
+                                    mdui.alert(result.msg || '删除失败');
+                                }
+                            }
+                        });
+                    },
+                    function () {
+                    },
+                    {confirmText: '确认', cancelText: '取消'}
+                );
+            }
+        }
+    });
+</script>
+</body>
+</html>
+

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta content="biezhi" name="author">
+    <meta content="${_csrf_token}" name="csrf_token">
+    <title>Blog - 用户登录</title>
+    <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
+    <link href="/static/admin/plugins/mdui/css/mdui.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: no-repeat url("/static/admin/images/bg/login/${random(1,3)}.png");
+        }
+
+        .panel-heading {
+            background: url("/static/admin/images/bg/heading.png") center;
+            background-size: cover;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            position: relative;
+            top: -30px;
+        }
+
+        .panel-heading > h3 {
+            text-shadow: 0 2px 3px #555;
+            color: #cac9c8;
+            text-align: center;
+        }
+
+        .btn-rounded {
+            border-radius: 2em;
+        }
+    </style>
+</head>
+<body>
+<div class="mdui-card mdui-center" style="width: 350px;margin-top: 10%;overflow: visible;">
+    <div class="mdui-card-media bg-img panel-heading mdui-shadow-8 mdui-p-y-3 mdui-m-x-3">
+        <h3 class="mdui-typo-headline">Login Tale</h3>
+    </div>
+    <div class="mdui-card-content mdui-m-x-3 " style="top: -20px;">
+        <form method="post" id="loginForm" onsubmit="return checkForm()">
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-1">
+                <label class="mdui-textfield-label">请输入账号 : )</label>
+                <input class="mdui-textfield-input" type="text" id="username" name="username" value="zaoangod">
+            </div>
+            <div class="mdui-textfield mdui-textfield-floating-label mdui-p-t-1">
+                <label class="mdui-textfield-label">请输入密码</label>
+                <input class="mdui-textfield-input" type="password" id="password" name="password" value="Jy@375897">
+            </div>
+            <label class="mdui-checkbox">
+                <input type="checkbox" id="rememberMe" name="rememberMe"/>
+                <i class="mdui-checkbox-icon"></i>记住我
+            </label>
+            <button type="submit" class="mdui-btn mdui-btn-raised mdui-btn-block mdui-ripple mdui-color-red-400 btn-rounded mdui-m-t-1">登录</button>
+        </form>
+    </div>
+</div>
+<script src="/static/admin/plugins/mdui/js/mdui.min.js"></script>
+<script src="/static/admin/plugins/axios/axios.min.js"></script>
+<script>
+    window.axios.defaults.headers.common = {
+        'X-CSRF-TOKEN': document.head.querySelector("[name=csrf_token]").content,
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-Requested-With': 'XMLHttpRequest'
+    };
+
+    function post(options) {
+        axios.post(options.url, options.data || {}).then(function (response) {
+            options.success && options.success(response.data);
+        }).catch(function (error) {
+            options.error && options.error(error)
+        });
+    }
+
+    function checkForm() {
+        let formData = new FormData();
+        formData.append('username', document.getElementById('username').value);
+        formData.append('password', document.getElementById('password').value);
+        formData.append('rememberMe', document.getElementById('rememberMe').value);
+        post({
+            url: '/admin/login',
+            data: formData,
+            success: function (result) {
+                if (result && result.success) {
+                    window.location.href = '/admin/index';
+                } else {
+                    mdui.snackbar({
+                        message: (result.msg || '登录失败'),
+                        position: 'top'
+                    });
+                }
+            }
+        });
+        return false;
+    }
+</script>
+</body>
+</html>

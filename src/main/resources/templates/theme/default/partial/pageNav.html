@@ -1,0 +1,20 @@
+#set(prefix = prefix)
+<nav class="pagination util--p-y-2">
+    #if(pageInfo.hasPrevPage)
+    <a class="prev" href="${prefix}/${pageInfo.prevPage}">
+        <img src="${themeUrl('/img/icon/prev.svg')}" alt="">
+    </a>
+    #end
+    #for(navIndex : pageInfo.navigatePageNums)
+    #if(pageInfo.pageNum == navIndex)
+    <span class="page-item page-current">${navIndex}</span>
+    #else
+    <a class="page-item" href="${prefix}/${navIndex}">${navIndex}</a>
+    #end
+    #end
+    #if(pageInfo.hasNextPage)
+    <a class="next" href="${prefix}/${pageInfo.nextPage}">
+        <img src="${themeUrl('/img/icon/next.svg')}" alt="">
+    </a>
+    #end
+</nav>
