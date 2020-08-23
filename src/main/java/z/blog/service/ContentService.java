@@ -40,7 +40,6 @@ public class ContentService {
         article.setTitle(param.getTitle());
         article.setFlag(param.getFlag());
         article.setContent(param.getContent());
-        article.setAuthorId(param.getAuthorId());
         article.setType(param.getType());
         article.setFormat(param.getFormat());
         article.setTag(param.getTag());
@@ -48,8 +47,8 @@ public class ContentService {
         article.setHistory(param.getHistory());
         article.setComment(param.getComment());
         article.setAllowComment(param.getAllowComment());
-        article.setCreated(param.getCreated());
-        article.setModified(param.getModified());
+        article.setCreateTime(param.getCreateTime());
+        article.setUpdateTime(param.getUpdateTime());
         article.setStatus(param.getStatus());
         article.setSort(param.getSort());
         article.setAid(param.getAid());

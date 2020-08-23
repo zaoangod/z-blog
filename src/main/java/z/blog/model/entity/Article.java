@@ -10,7 +10,6 @@ public class Article {
     private String title;
     private String flag;
     private String content;
-    private Integer authorId;
     private String type;
     private String format;
     private String tag;
