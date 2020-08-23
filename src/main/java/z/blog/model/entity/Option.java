@@ -6,6 +6,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class Option {
-    private String name;
+    private String key;
     private String value;
 }

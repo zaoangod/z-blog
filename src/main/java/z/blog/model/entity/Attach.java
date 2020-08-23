@@ -6,10 +6,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class Attach {
-    private String aid;
+    private Integer aid;
     private String name;
     private String type;
     private String key;
-    private String created;
-    private String url;
+    private Integer createTime;
+    private Integer url;
+    private Integer status;
 }

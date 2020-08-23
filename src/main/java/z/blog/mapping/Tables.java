@@ -6,8 +6,6 @@ package z.blog.mapping;
 
 import z.blog.mapping.tables.ARTICLE;
 import z.blog.mapping.tables.ATTACH;
-import z.blog.mapping.tables.COMMENT;
-import z.blog.mapping.tables.LOG;
 import z.blog.mapping.tables.META;
 import z.blog.mapping.tables.OPTION;
 import z.blog.mapping.tables.RELATIONSHIP;
@@ -29,16 +27,6 @@ public class Tables {
      * The table <code>t_attach</code>.
      */
     public static final ATTACH T_ATTACH = ATTACH.T_ATTACH;
-
-    /**
-     * The table <code>t_comment</code>.
-     */
-    public static final COMMENT T_COMMENT = COMMENT.T_COMMENT;
-
-    /**
-     * The table <code>t_log</code>.
-     */
-    public static final LOG T_LOG = LOG.T_LOG;
 
     /**
      * The table <code>t_meta</code>.

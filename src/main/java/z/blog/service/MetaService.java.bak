@@ -31,8 +31,8 @@ public class MetaService {
         if (meta != null && meta.getMid() != null) {
             data.where(T_META.MID.eq(meta.getMid()));
         }
-        if (meta != null && meta.getName() != null) {
-            data.where(T_META.NAME.eq(meta.getName()));
+        if (meta != null && meta.getTitle() != null) {
+            data.where(T_META.NAME.eq(meta.getTitle()));
         }
         if (meta != null && meta.getSlug() != null) {
             data.where(T_META.SLUG.eq(meta.getSlug()));
@@ -52,7 +52,7 @@ public class MetaService {
         if (type != null) {
             List<Meta> metas = this.getMeta(new Meta().setType(type));
             if (null != metas) {
-                return metas.stream().collect(Collectors.toMap(Meta::getName, this::getMetaContents));
+                return metas.stream().collect(Collectors.toMap(Meta::getTitle, this::getMetaContents));
             } else {
                 return new HashMap<>();
             }

@@ -13,8 +13,6 @@ import org.jooq.impl.SchemaImpl;
 
 import z.blog.mapping.tables.ARTICLE;
 import z.blog.mapping.tables.ATTACH;
-import z.blog.mapping.tables.COMMENT;
-import z.blog.mapping.tables.LOG;
 import z.blog.mapping.tables.META;
 import z.blog.mapping.tables.OPTION;
 import z.blog.mapping.tables.RELATIONSHIP;
@@ -27,7 +25,7 @@ import z.blog.mapping.tables.USER;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefaultSchema extends SchemaImpl {
 
-    private static final long serialVersionUID = 1911622756;
+    private static final long serialVersionUID = 106429630;
 
     /**
      * The reference instance of <code>DEFAULT_SCHEMA</code>
@@ -43,16 +41,6 @@ public class DefaultSchema extends SchemaImpl {
      * The table <code>t_attach</code>.
      */
     public final ATTACH T_ATTACH = ATTACH.T_ATTACH;
-
-    /**
-     * The table <code>t_comment</code>.
-     */
-    public final COMMENT T_COMMENT = COMMENT.T_COMMENT;
-
-    /**
-     * The table <code>t_log</code>.
-     */
-    public final LOG T_LOG = LOG.T_LOG;
 
     /**
      * The table <code>t_meta</code>.
@@ -92,8 +80,6 @@ public class DefaultSchema extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             ARTICLE.T_ARTICLE,
             ATTACH.T_ATTACH,
-            COMMENT.T_COMMENT,
-            LOG.T_LOG,
             META.T_META,
             OPTION.T_OPTION,
             RELATIONSHIP.T_RELATIONSHIP,

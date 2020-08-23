@@ -4,9 +4,6 @@
 package z.blog.mapping.tables;
 
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.Name;
 import org.jooq.Row2;
@@ -14,9 +11,7 @@ import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
-import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
-import org.jooq.impl.Internal;
 import org.jooq.impl.TableImpl;
 
 import z.blog.mapping.DefaultSchema;
@@ -29,7 +24,7 @@ import z.blog.mapping.tables.records.OptionRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class OPTION extends TableImpl<OptionRecord> {
 
-    private static final long serialVersionUID = 1188202444;
+    private static final long serialVersionUID = -1984213226;
 
     /**
      * The reference instance of <code>t_option</code>
@@ -45,14 +40,14 @@ public class OPTION extends TableImpl<OptionRecord> {
     }
 
     /**
-     * The column <code>t_option.name</code>.
+     * The column <code>t_option.key</code>.
      */
-    public final TableField<OptionRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<OptionRecord, String> KEY = createField(DSL.name("key"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
      * The column <code>t_option.value</code>.
      */
-    public final TableField<OptionRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
+    public final TableField<OptionRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
 
     /**
      * Create a <code>t_option</code> table reference
@@ -86,18 +81,6 @@ public class OPTION extends TableImpl<OptionRecord> {
     @Override
     public Schema getSchema() {
         return DefaultSchema.DEFAULT_SCHEMA;
-    }
-
-    @Override
-    public UniqueKey<OptionRecord> getPrimaryKey() {
-        return Internal.createUniqueKey(OPTION.T_OPTION, "pk_t_option", new TableField[] { OPTION.T_OPTION.NAME }, true);
-    }
-
-    @Override
-    public List<UniqueKey<OptionRecord>> getKeys() {
-        return Arrays.<UniqueKey<OptionRecord>>asList(
-              Internal.createUniqueKey(OPTION.T_OPTION, "pk_t_option", new TableField[] { OPTION.T_OPTION.NAME }, true)
-        );
     }
 
     @Override

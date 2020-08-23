@@ -18,8 +18,8 @@ public class Article {
     private Integer history;
     private Integer comment;
     private Integer allowComment;
-    private Integer created;
-    private Integer modified;
-    private String status;
+    private Integer createTime;
+    private Integer updateTime;
+    private Integer status;
     private Integer sort;
 }

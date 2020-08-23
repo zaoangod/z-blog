@@ -8,8 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Name;
-import org.jooq.Row10;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -29,7 +30,7 @@ import z.blog.mapping.tables.records.UserRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class USER extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = -694680724;
+    private static final long serialVersionUID = 49444059;
 
     /**
      * The reference instance of <code>t_user</code>
@@ -47,17 +48,17 @@ public class USER extends TableImpl<UserRecord> {
     /**
      * The column <code>t_user.uid</code>.
      */
-    public final TableField<UserRecord, Integer> UID = createField(DSL.name("uid"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserRecord, Integer> UID = createField(DSL.name("uid"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>t_user.username</code>.
      */
-    public final TableField<UserRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<UserRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
 
     /**
      * The column <code>t_user.password</code>.
      */
-    public final TableField<UserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(64).nullable(false), this, "");
+    public final TableField<UserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
 
     /**
      * The column <code>t_user.email</code>.
@@ -65,34 +66,14 @@ public class USER extends TableImpl<UserRecord> {
     public final TableField<UserRecord, String> EMAIL = createField(DSL.name("email"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>t_user.home_url</code>.
-     */
-    public final TableField<UserRecord, String> HOME_URL = createField(DSL.name("home_url"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>t_user.screen_name</code>.
-     */
-    public final TableField<UserRecord, String> SCREEN_NAME = createField(DSL.name("screen_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>t_user.created</code>.
      */
-    public final TableField<UserRecord, Integer> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<UserRecord, String> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.VARCHAR(20), this, "");
 
     /**
-     * The column <code>t_user.activated</code>.
+     * The column <code>t_user.login_time</code>.
      */
-    public final TableField<UserRecord, Integer> ACTIVATED = createField(DSL.name("activated"), org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>t_user.logged</code>.
-     */
-    public final TableField<UserRecord, Integer> LOGGED = createField(DSL.name("logged"), org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>t_user.group_name</code>.
-     */
-    public final TableField<UserRecord, String> GROUP_NAME = createField(DSL.name("group_name"), org.jooq.impl.SQLDataType.VARCHAR(16), this, "");
+    public final TableField<UserRecord, Integer> LOGIN_TIME = createField(DSL.name("login_time"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>t_user</code> table reference
@@ -129,6 +110,11 @@ public class USER extends TableImpl<UserRecord> {
     }
 
     @Override
+    public Identity<UserRecord, Integer> getIdentity() {
+        return Internal.createIdentity(USER.T_USER, USER.T_USER.UID);
+    }
+
+    @Override
     public UniqueKey<UserRecord> getPrimaryKey() {
         return Internal.createUniqueKey(USER.T_USER, "pk_t_user", new TableField[] { USER.T_USER.UID }, true);
     }
@@ -137,8 +123,6 @@ public class USER extends TableImpl<UserRecord> {
     public List<UniqueKey<UserRecord>> getKeys() {
         return Arrays.<UniqueKey<UserRecord>>asList(
               Internal.createUniqueKey(USER.T_USER, "pk_t_user", new TableField[] { USER.T_USER.UID }, true)
-            , Internal.createUniqueKey(USER.T_USER, "sqlite_autoindex_t_user_1", new TableField[] { USER.T_USER.UID }, true)
-            , Internal.createUniqueKey(USER.T_USER, "sqlite_autoindex_t_user_2", new TableField[] { USER.T_USER.USERNAME }, true)
         );
     }
 
@@ -169,11 +153,11 @@ public class USER extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Integer, String, String, String, String, String, Integer, Integer, Integer, String> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
