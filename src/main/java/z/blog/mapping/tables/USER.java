@@ -10,7 +10,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.Identity;
 import org.jooq.Name;
-import org.jooq.Row6;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -30,7 +30,7 @@ import z.blog.mapping.tables.records.UserRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class USER extends TableImpl<UserRecord> {
 
-    private static final long serialVersionUID = 49444059;
+    private static final long serialVersionUID = 1058967889;
 
     /**
      * The reference instance of <code>t_user</code>
@@ -53,22 +53,17 @@ public class USER extends TableImpl<UserRecord> {
     /**
      * The column <code>t_user.username</code>.
      */
-    public final TableField<UserRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
+    public final TableField<UserRecord, String> USERNAME = createField(DSL.name("username"), org.jooq.impl.SQLDataType.VARCHAR(64), this, "");
 
     /**
      * The column <code>t_user.password</code>.
      */
-    public final TableField<UserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
+    public final TableField<UserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.VARCHAR(64), this, "");
 
     /**
      * The column <code>t_user.email</code>.
      */
     public final TableField<UserRecord, String> EMAIL = createField(DSL.name("email"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>t_user.created</code>.
-     */
-    public final TableField<UserRecord, String> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.VARCHAR(20), this, "");
 
     /**
      * The column <code>t_user.login_time</code>.
@@ -153,11 +148,11 @@ public class USER extends TableImpl<UserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Integer, String, String, String, String, Integer> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row5<Integer, String, String, String, Integer> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

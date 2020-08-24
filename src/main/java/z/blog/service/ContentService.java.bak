@@ -8,6 +8,7 @@ import spark.utils.StringUtils;
 import z.blog.kit.BlogKit;
 import z.blog.kit.PageInfo;
 import z.blog.mapping.tables.records.ArticleRecord;
+import z.blog.model.dto.Type;
 import z.blog.model.entity.Article;
 import z.blog.model.param.ArticleParam;
 import z.blog.model.param.MetaParam;
@@ -34,7 +35,7 @@ public class ContentService {
      *
      * @param param 要保存的内容
      */
-    public void insArticle(Article param) {
+    public void insert(Article param) {
         ArticleRecord article = dslContext().newRecord(T_ARTICLE);
 
         article.setTitle(param.getTitle());
@@ -67,7 +68,7 @@ public class ContentService {
      *
      * @param param 参数
      */
-    public void delArticle(Article param) {
+    public void delete(Article param) {
         log.info("-> 删除文章");
         dslContext().deleteFrom(T_ARTICLE).where(T_ARTICLE.AID.eq(param.getAid())).execute();
     }
@@ -75,7 +76,7 @@ public class ContentService {
     /**
      * 获取文章
      */
-    public Article getArticle(String id) {
+    public Article select(String id) {
         log.info("-> 获取文章");
         Condition condition;
         if (BlogKit.isArticleId(id)) {
@@ -92,11 +93,11 @@ public class ContentService {
      * @param param 参数
      * @return 分页结果
      */
-    public PageInfo<Article> getArticle(Article param, int pageNum, int pageSize) {
+    public PageInfo<Article> select(ArticleParam param) {
         //参数处理
         param = Optional.ofNullable(param).orElse(new ArticleParam());
-        pageNum = Optional.of(pageNum).filter(i -> (i > 0 && i < 999)).orElse(1);
-        pageSize = Optional.of(pageSize).filter(i -> (i > 0 && i < 9999)).orElse(20);
+        int pageNum = Optional.of(param.getPageNum()).filter(i -> (i > 0 && i < 999)).orElse(1);
+        int pageSize = Optional.of(param.getPageSize()).filter(i -> (i > 0 && i < 9999)).orElse(20);
         //查询条件
         List<Condition> where = new ArrayList<>();
         //文章标题
@@ -118,7 +119,7 @@ public class ContentService {
         //查询SQL
         SelectConditionStep<Record> query = dsl.select().from(T_ARTICLE).where(where);
         //分页数据
-        List<Article> list = query.orderBy(T_ARTICLE.SORT.desc(), T_ARTICLE.CREATED.desc()).limit((pageNum - 1) * pageSize, pageSize).fetchInto(Article.class);
+        List<Article> list = query.orderBy(T_ARTICLE.SORT.desc(), T_ARTICLE.CREATE_TIME.desc()).limit((pageNum - 1) * pageSize, pageSize).fetchInto(Article.class);
         //统计总数
         Integer total = dsl.selectCount().from(query).fetchOneInto(Integer.class);
         //分页对象
@@ -133,16 +134,18 @@ public class ContentService {
      * @param param 参数
      * @return 分页对象
      */
-    public PageInfo<Article> getArticle(MetaParam param) {
+    public PageInfo<Article> select(MetaParam param) {
         log.info("-> 查询分类/标签下的文章分页");
         //参数处理
         param = Optional.ofNullable(param).orElse(new MetaParam());
         int pageNum = Optional.ofNullable(param.getPageNum()).filter(i -> (i > 0 && i < 999)).orElse(1);
         int pageSize = Optional.ofNullable(param.getPageSize()).filter(i -> (i > 0 && i < 9999)).orElse(20);
         //查询SQL
-        SelectConditionStep<Record> query = select().from(T_RELATIONSHIP)
+
+        SelectConditionStep<Record> query = dsl.select().from(T_RELATIONSHIP)
                 .leftJoin(T_ARTICLE).on(T_RELATIONSHIP.AID.eq(T_ARTICLE.AID))
-                .where(T_RELATIONSHIP.MID.eq(param.getMid()));
+                .where(T_RELATIONSHIP.MID.eq(param.getMid()))
+                .and(T_ARTICLE.STATUS.eq(Type.PUBLISH));
         //统计总数
         Integer total = selectCount().from(query).fetchOneInto(Integer.class);
         //分页数据
@@ -160,24 +163,25 @@ public class ContentService {
      * @param type  上一篇: prev | 下一篇: next
      * @return 文章
      */
-
-    public Article getArticle(Article param, String type) {
+    public Article select(Article param, String type) {
         log.info("-> 获取相邻的文章");
         Condition condition;
         if (PREV.equalsIgnoreCase(type)) {
             log.info("-> 上一篇文章");
-            condition = T_ARTICLE.CREATED.gt(param.getCreated());
+            condition = T_ARTICLE.CREATE_TIME.gt(param.getCreateTime());
         } else if (NEXT.equalsIgnoreCase(type)) {
             log.info("-> 下一篇文章");
-            condition = T_ARTICLE.CREATED.lt(param.getCreated());
+            condition = T_ARTICLE.CREATE_TIME.lt(param.getCreateTime());
         } else {
             return null;
         }
+        //
+        condition.and(T_ARTICLE.TYPE.eq(POST)).and(T_ARTICLE.STATUS.eq(Type.PUBLISH));
         //查询
-        return select().from(T_ARTICLE)
+        return dsl.select().from(T_ARTICLE)
                 .where(
                         T_ARTICLE.AID.eq(
-                                select(max(T_ARTICLE.AID)).from(T_ARTICLE).where(T_ARTICLE.TYPE.eq(POST)).and(condition)
+                                select(max(T_ARTICLE.AID)).from(T_ARTICLE).where(condition)
                         )
                 ).fetchOneInto(Article.class);
     }

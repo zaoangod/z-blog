@@ -30,7 +30,7 @@ import z.blog.mapping.tables.records.AttachRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ATTACH extends TableImpl<AttachRecord> {
 
-    private static final long serialVersionUID = -554959915;
+    private static final long serialVersionUID = -2128405753;
 
     /**
      * The reference instance of <code>t_attach</code>
@@ -53,7 +53,7 @@ public class ATTACH extends TableImpl<AttachRecord> {
     /**
      * The column <code>t_attach.name</code>.
      */
-    public final TableField<AttachRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
+    public final TableField<AttachRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>t_attach.type</code>.
@@ -73,12 +73,12 @@ public class ATTACH extends TableImpl<AttachRecord> {
     /**
      * The column <code>t_attach.url</code>.
      */
-    public final TableField<AttachRecord, Integer> URL = createField(DSL.name("url"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<AttachRecord, String> URL = createField(DSL.name("url"), org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
 
     /**
      * The column <code>t_attach.status</code>.
      */
-    public final TableField<AttachRecord, Integer> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<AttachRecord, String> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
      * Create a <code>t_attach</code> table reference
@@ -162,7 +162,7 @@ public class ATTACH extends TableImpl<AttachRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<Integer, String, String, String, Integer, Integer, Integer> fieldsRow() {
+    public Row7<Integer, String, String, String, Integer, String, String> fieldsRow() {
         return (Row7) super.fieldsRow();
     }
 }

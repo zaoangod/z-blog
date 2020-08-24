@@ -30,7 +30,7 @@ import z.blog.mapping.tables.records.ArticleRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ARTICLE extends TableImpl<ArticleRecord> {
 
-    private static final long serialVersionUID = 69784772;
+    private static final long serialVersionUID = 1922514385;
 
     /**
      * The reference instance of <code>t_article</code>
@@ -53,12 +53,12 @@ public class ARTICLE extends TableImpl<ArticleRecord> {
     /**
      * The column <code>t_article.title</code>.
      */
-    public final TableField<ArticleRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<ArticleRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
 
     /**
      * The column <code>t_article.flag</code>.
      */
-    public final TableField<ArticleRecord, String> FLAG = createField(DSL.name("flag"), org.jooq.impl.SQLDataType.VARCHAR(32), this, "");
+    public final TableField<ArticleRecord, String> FLAG = createField(DSL.name("flag"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>t_article.content</code>.
@@ -113,7 +113,7 @@ public class ARTICLE extends TableImpl<ArticleRecord> {
     /**
      * The column <code>t_article.status</code>.
      */
-    public final TableField<ArticleRecord, Integer> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ArticleRecord, String> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>t_article.sort</code>.
@@ -202,7 +202,7 @@ public class ARTICLE extends TableImpl<ArticleRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Integer, String, String, String, String, String, String, String, Integer, Integer, Integer, Integer, Integer, Integer, Integer> fieldsRow() {
+    public Row15<Integer, String, String, String, String, String, String, String, Integer, Integer, Integer, Integer, Integer, String, Integer> fieldsRow() {
         return (Row15) super.fieldsRow();
     }
 }

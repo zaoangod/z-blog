@@ -30,7 +30,7 @@ import z.blog.mapping.tables.records.CommentRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class COMMENT extends TableImpl<CommentRecord> {
 
-    private static final long serialVersionUID = 167508256;
+    private static final long serialVersionUID = -497061072;
 
     /**
      * The reference instance of <code>t_comment</code>
@@ -53,22 +53,22 @@ public class COMMENT extends TableImpl<CommentRecord> {
     /**
      * The column <code>t_comment.aid</code>.
      */
-    public final TableField<CommentRecord, Integer> AID = createField(DSL.name("aid"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<CommentRecord, Integer> AID = createField(DSL.name("aid"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>t_comment.parent</code>.
      */
-    public final TableField<CommentRecord, Integer> PARENT = createField(DSL.name("parent"), org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CommentRecord, Integer> PARENT = createField(DSL.name("parent"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>t_comment.author</code>.
      */
-    public final TableField<CommentRecord, String> AUTHOR = createField(DSL.name("author"), org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CommentRecord, String> AUTHOR = createField(DSL.name("author"), org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
 
     /**
      * The column <code>t_comment.mail</code>.
      */
-    public final TableField<CommentRecord, String> MAIL = createField(DSL.name("mail"), org.jooq.impl.SQLDataType.VARCHAR(200).nullable(false), this, "");
+    public final TableField<CommentRecord, String> MAIL = createField(DSL.name("mail"), org.jooq.impl.SQLDataType.VARCHAR(200), this, "");
 
     /**
      * The column <code>t_comment.url</code>.
@@ -88,22 +88,22 @@ public class COMMENT extends TableImpl<CommentRecord> {
     /**
      * The column <code>t_comment.content</code>.
      */
-    public final TableField<CommentRecord, String> CONTENT = createField(DSL.name("content"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<CommentRecord, String> CONTENT = createField(DSL.name("content"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>t_comment.type</code>.
      */
-    public final TableField<CommentRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(20), this, "");
+    public final TableField<CommentRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(16), this, "");
 
     /**
      * The column <code>t_comment.status</code>.
      */
-    public final TableField<CommentRecord, String> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.VARCHAR(20), this, "");
+    public final TableField<CommentRecord, String> STATUS = createField(DSL.name("status"), org.jooq.impl.SQLDataType.VARCHAR(16), this, "");
 
     /**
      * The column <code>t_comment.create_time</code>.
      */
-    public final TableField<CommentRecord, Integer> CREATE_TIME = createField(DSL.name("create_time"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<CommentRecord, Integer> CREATE_TIME = createField(DSL.name("create_time"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>t_comment</code> table reference

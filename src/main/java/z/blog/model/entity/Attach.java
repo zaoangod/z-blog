@@ -11,6 +11,6 @@ public class Attach {
     private String type;
     private String key;
     private Integer createTime;
-    private Integer url;
+    private String url;
     private Integer status;
 }

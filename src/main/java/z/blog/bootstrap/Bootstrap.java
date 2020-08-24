@@ -2,20 +2,19 @@ package z.blog.bootstrap;
 
 import lombok.extern.slf4j.Slf4j;
 import z.blog.model.entity.Option;
-import z.blog.service.SiteService;
 
 import java.util.List;
 
-import static z.blog.Application.CACHE;
-import static z.blog.Application.siteService;
+//import static z.blog.Application.CACHE;
+//import static z.blog.Application.siteService;
 
 @Slf4j
 public class Bootstrap {
 
-    public static void init() {
+    /*public static void init() {
         JooqConfig.init();
         initCache();
-    }
+    }*/
 
     private static void initDataBate() {
         //创建文章表
@@ -58,8 +57,8 @@ public class Bootstrap {
     /**
      * 初始化缓存数据
      */
-    private static void initCache() {
+    /*private static void initCache() {
         List<Option> list = siteService.getOption(null);
         list.forEach(i -> CACHE.put(i.getName(), i.getValue()));
-    }
+    }*/
 }

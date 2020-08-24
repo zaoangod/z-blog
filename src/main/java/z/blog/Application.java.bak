@@ -7,7 +7,7 @@ import z.blog.bootstrap.Bootstrap;
 import z.blog.controller.Home;
 import z.blog.kit.CacheKit;
 import z.blog.service.ContentService;
-import z.blog.service.SiteService;
+//import z.blog.service.SiteService;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ public class Application {
 
     public static CacheKit CACHE = CacheKit.cache();
 
-    public static SiteService siteService = new SiteService();
+    //public static SiteService siteService = new SiteService();
     public static ContentService contentService = new ContentService();
 
     public static void main(String[] args) {

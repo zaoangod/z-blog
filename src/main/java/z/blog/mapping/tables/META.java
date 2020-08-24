@@ -30,7 +30,7 @@ import z.blog.mapping.tables.records.MetaRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class META extends TableImpl<MetaRecord> {
 
-    private static final long serialVersionUID = 1806555396;
+    private static final long serialVersionUID = 358083536;
 
     /**
      * The reference instance of <code>t_meta</code>
@@ -53,17 +53,17 @@ public class META extends TableImpl<MetaRecord> {
     /**
      * The column <code>t_meta.title</code>.
      */
-    public final TableField<MetaRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
+    public final TableField<MetaRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>t_meta.flag</code>.
      */
-    public final TableField<MetaRecord, String> FLAG = createField(DSL.name("flag"), org.jooq.impl.SQLDataType.VARCHAR(50), this, "");
+    public final TableField<MetaRecord, String> FLAG = createField(DSL.name("flag"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>t_meta.type</code>.
      */
-    public final TableField<MetaRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MetaRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(32), this, "");
 
     /**
      * The column <code>t_meta.description</code>.

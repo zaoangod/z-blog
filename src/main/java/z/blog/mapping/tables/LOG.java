@@ -30,7 +30,7 @@ import z.blog.mapping.tables.records.LogRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LOG extends TableImpl<LogRecord> {
 
-    private static final long serialVersionUID = -752825626;
+    private static final long serialVersionUID = 1605537734;
 
     /**
      * The reference instance of <code>t_log</code>
@@ -53,7 +53,7 @@ public class LOG extends TableImpl<LogRecord> {
     /**
      * The column <code>t_log.action</code>.
      */
-    public final TableField<LogRecord, String> ACTION = createField(DSL.name("action"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LogRecord, String> ACTION = createField(DSL.name("action"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>t_log.data</code>.
@@ -63,12 +63,12 @@ public class LOG extends TableImpl<LogRecord> {
     /**
      * The column <code>t_log.ip</code>.
      */
-    public final TableField<LogRecord, String> IP = createField(DSL.name("ip"), org.jooq.impl.SQLDataType.VARCHAR(20), this, "");
+    public final TableField<LogRecord, String> IP = createField(DSL.name("ip"), org.jooq.impl.SQLDataType.VARCHAR(64), this, "");
 
     /**
      * The column <code>t_log.create_time</code>.
      */
-    public final TableField<LogRecord, Integer> CREATE_TIME = createField(DSL.name("create_time"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LogRecord, Integer> CREATE_TIME = createField(DSL.name("create_time"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>t_log</code> table reference

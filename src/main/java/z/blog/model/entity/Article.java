@@ -19,6 +19,6 @@ public class Article {
     private Integer allowComment;
     private Integer createTime;
     private Integer updateTime;
-    private Integer status;
+    private String status;
     private Integer sort;
 }
