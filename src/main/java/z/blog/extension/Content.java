@@ -10,6 +10,7 @@ import z.blog.kit.PageInfo;
 import z.blog.kit.StrKit;
 import z.blog.model.dto.Type;
 import z.blog.model.entity.Article;
+import z.blog.model.param.ArticleParam;
 
 import java.util.Optional;
 
@@ -123,15 +124,19 @@ public final class Content {
      */
     public static PageInfo<Article> articles() {
         ValueStack vs = InterpretContext.current().getValueStack();
+        log.info("{}", vs.getValue("pageNum"));
+        log.info("{}", vs.getValue("pageSize"));
         //分页相关参数
-        Integer pageNum = Optional.ofNullable((Integer) vs.getValue("pageNum")).orElse(1);
-        Integer pageSize = Optional.ofNullable((Integer) vs.getValue("pageSize")).orElse(
-                Integer.valueOf((String) CACHE.get(OPT_PAGE_LIMIT))
-        );
+        int pageNum = Optional.ofNullable(vs.getValue("pageNum")).map(String::valueOf).map(Integer::valueOf).orElse(1);
+        int pageSize = Optional.ofNullable(vs.getValue("pageSize")).map(String::valueOf).map(Integer::valueOf).orElse((Integer) CACHE.get(OPT_PAGE_LIMIT));
         //构建查询参数
-        Article param = new Article().setType(POST).setStatus(PUBLISH);
+        ArticleParam param = new ArticleParam();
+        param.setType(POST);
+        param.setStatus(PUBLISH);
+        param.setPageNum(pageNum);
+        param.setPageSize(pageSize);
         //分页查询
-        PageInfo<Article> pageInfo = contentService.getArticle(param, pageNum, pageSize);
+        PageInfo<Article> pageInfo = contentService.getArticle(param);
         //设置参数
         vs.setLocal("title", "首页 - 第" + pageNum + "页");
         vs.setLocal("pageNum", pageNum);

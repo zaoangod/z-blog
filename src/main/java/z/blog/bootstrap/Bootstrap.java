@@ -5,18 +5,17 @@ import z.blog.model.entity.Option;
 
 import java.util.List;
 
-//import static z.blog.Application.CACHE;
-//import static z.blog.Application.siteService;
+import static z.blog.Application.CACHE;
+import static z.blog.Application.siteService;
 
 @Slf4j
 public class Bootstrap {
 
-    /*public static void init() {
-        JooqConfig.init();
-        initCache();
-    }*/
+    public static void init() {
+        loadConfig();
+    }
 
-    private static void initDataBate() {
+    /*private static void initDataBate() {
         //创建文章表
         String createArticle = "create table t_article\n" +
                 "(\n" +
@@ -51,14 +50,13 @@ public class Bootstrap {
                 ");";
         log.info("-> execute sql: \n{}", createAttach);
         //DSL.using(SQLDialect.SQLITE).execute(createAttach);
-
-    }
+    }*/
 
     /**
      * 初始化缓存数据
      */
-    /*private static void initCache() {
+    private static void loadConfig() {
         List<Option> list = siteService.getOption(null);
-        list.forEach(i -> CACHE.put(i.getName(), i.getValue()));
-    }*/
+        list.forEach(i -> CACHE.put(i.getKey(), i.getValue()));
+    }
 }

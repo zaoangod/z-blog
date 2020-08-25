@@ -7,19 +7,27 @@ import z.blog.bootstrap.Bootstrap;
 import z.blog.controller.Home;
 import z.blog.kit.CacheKit;
 import z.blog.service.ContentService;
-//import z.blog.service.SiteService;
+import z.blog.service.SiteService;
 
 import java.util.Map;
 
 import static z.blog.bootstrap.Constant.TEMPLATES;
 
+//import z.blog.service.SiteService;
+
 @Slf4j
 public class Application {
 
-    public static CacheKit CACHE = CacheKit.cache();
+    public static CacheKit CACHE;
+    public static SiteService siteService;
+    public static ContentService contentService;
 
-    //public static SiteService siteService = new SiteService();
-    public static ContentService contentService = new ContentService();
+    static {
+        //缓存
+        CACHE = CacheKit.cache();
+        siteService = new SiteService();
+        contentService = new ContentService();
+    }
 
     public static void main(String[] args) {
         //系统初始化

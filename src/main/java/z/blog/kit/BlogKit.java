@@ -1,5 +1,7 @@
 package z.blog.kit;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.regex.Pattern;
 
 public class BlogKit {
@@ -15,5 +17,12 @@ public class BlogKit {
         } else {
             return false;
         }
+    }
+
+    public static int getInstant() {
+        return (int) LocalDateTime.now().toEpochSecond(ZoneOffset.of("+8"));
+    }
+
+    public static void main(String[] args) throws NoSuchMethodException {
     }
 }

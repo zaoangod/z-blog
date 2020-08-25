@@ -13,15 +13,18 @@ import javax.sql.DataSource;
 @Slf4j
 public class JooqConfig {
 
-    private static HikariDataSource dataSource = null;
-
     public static DSLContext dsl = null;
 
-    public static void init() {
+    private static HikariDataSource dataSource = null;
+
+    static {
         dslContext();
     }
 
-    public static DSLContext dslContext() {
+    private JooqConfig() {
+    }
+
+    private static void dslContext() {
         if (dsl == null) {
             synchronized (JooqConfig.class) {
                 //数据库连接池
@@ -39,7 +42,6 @@ public class JooqConfig {
                 dsl = DSL.using(configuration);
             }
         }
-        return dsl;
     }
 
     private static HikariDataSource getDataSource() {
@@ -47,7 +49,8 @@ public class JooqConfig {
             dataSource = new HikariDataSource();
             dataSource.setAutoCommit(true);
             //dataSource.setJdbcUrl("jdbc:sqlite:blog.db");
-            dataSource.setJdbcUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\src\\main\\resources\\z-blog.db");
+            //dataSource.setJdbcUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\src\\main\\resources\\z-blog.db");
+            dataSource.setJdbcUrl("jdbc:sqlite:D:\\workspace\\IDEA\\z-blog\\blog.db");
             dataSource.setPoolName("blog-db-pool");
         }
         return dataSource;

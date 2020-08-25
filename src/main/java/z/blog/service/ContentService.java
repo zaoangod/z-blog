@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import static org.jooq.impl.DSL.*;
 import static z.blog.bootstrap.JooqConfig.dsl;
-import static z.blog.bootstrap.JooqConfig.dslContext;
 import static z.blog.mapping.tables.ARTICLE.T_ARTICLE;
 import static z.blog.mapping.tables.RELATIONSHIP.T_RELATIONSHIP;
 import static z.blog.model.dto.Type.*;
@@ -35,8 +34,8 @@ public class ContentService {
      *
      * @param param 要保存的内容
      */
-    public void insert(Article param) {
-        ArticleRecord article = dslContext().newRecord(T_ARTICLE);
+    public void insArticle(Article param) {
+        ArticleRecord article = dsl.newRecord(T_ARTICLE);
 
         article.setTitle(param.getTitle());
         article.setFlag(param.getFlag());
@@ -68,15 +67,15 @@ public class ContentService {
      *
      * @param param 参数
      */
-    public void delete(Article param) {
+    public void delArticle(Article param) {
         log.info("-> 删除文章");
-        dslContext().deleteFrom(T_ARTICLE).where(T_ARTICLE.AID.eq(param.getAid())).execute();
+        dsl.deleteFrom(T_ARTICLE).where(T_ARTICLE.AID.eq(param.getAid())).execute();
     }
 
     /**
      * 获取文章
      */
-    public Article select(String id) {
+    public Article getArticle(String id) {
         log.info("-> 获取文章");
         Condition condition;
         if (BlogKit.isArticleId(id)) {
@@ -84,7 +83,7 @@ public class ContentService {
         } else {
             condition = T_ARTICLE.FLAG.eq(id);
         }
-        return dslContext().select().from(T_ARTICLE).where(condition).fetchOneInto(Article.class);
+        return dsl.select().from(T_ARTICLE).where(condition).fetchOneInto(Article.class);
     }
 
     /**
@@ -93,7 +92,7 @@ public class ContentService {
      * @param param 参数
      * @return 分页结果
      */
-    public PageInfo<Article> select(ArticleParam param) {
+    public PageInfo<Article> getArticle(ArticleParam param) {
         //参数处理
         param = Optional.ofNullable(param).orElse(new ArticleParam());
         int pageNum = Optional.of(param.getPageNum()).filter(i -> (i > 0 && i < 999)).orElse(1);
@@ -134,7 +133,7 @@ public class ContentService {
      * @param param 参数
      * @return 分页对象
      */
-    public PageInfo<Article> select(MetaParam param) {
+    public PageInfo<Article> getArticle(MetaParam param) {
         log.info("-> 查询分类/标签下的文章分页");
         //参数处理
         param = Optional.ofNullable(param).orElse(new MetaParam());
@@ -163,7 +162,7 @@ public class ContentService {
      * @param type  上一篇: prev | 下一篇: next
      * @return 文章
      */
-    public Article select(Article param, String type) {
+    public Article getArticle(Article param, String type) {
         log.info("-> 获取相邻的文章");
         Condition condition;
         if (PREV.equalsIgnoreCase(type)) {
@@ -181,7 +180,7 @@ public class ContentService {
         return dsl.select().from(T_ARTICLE)
                 .where(
                         T_ARTICLE.AID.eq(
-                                select(max(T_ARTICLE.AID)).from(T_ARTICLE).where(condition)
+                                dsl.select(max(T_ARTICLE.AID)).from(T_ARTICLE).where(condition)
                         )
                 ).fetchOneInto(Article.class);
     }
