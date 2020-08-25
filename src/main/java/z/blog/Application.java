@@ -13,8 +13,6 @@ import java.util.Map;
 
 import static z.blog.bootstrap.Constant.TEMPLATES;
 
-//import z.blog.service.SiteService;
-
 @Slf4j
 public class Application {
 

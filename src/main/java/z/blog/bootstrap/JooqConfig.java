@@ -50,7 +50,7 @@ public class JooqConfig {
             dataSource.setAutoCommit(true);
             //dataSource.setJdbcUrl("jdbc:sqlite:blog.db");
             //dataSource.setJdbcUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\src\\main\\resources\\z-blog.db");
-            dataSource.setJdbcUrl("jdbc:sqlite:D:\\workspace\\IDEA\\z-blog\\blog.db");
+            dataSource.setJdbcUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\blog.db");
             dataSource.setPoolName("blog-db-pool");
         }
         return dataSource;
