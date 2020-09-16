@@ -42,7 +42,7 @@ public class Constant {
     public static final String SITE_PAGE_LIMIT = "site_page_limit";
     //主题名称
     public static final String SITE_INSTALL = "site_install";
-    //主题名称
+    //评论是否需要审核
     public static final String SITE_COMMENT_AUDIT = "site_comment_audit";
 
     /**

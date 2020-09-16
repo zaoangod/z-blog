@@ -1,9 +1,4 @@
 @charset "UTF-8";
-.main-container {
-    position: relative;
-    width: 100%;
-}
-
 /** 右边开始 */
 .content-wrap {
     position: absolute;
@@ -11,11 +6,6 @@
     right: 0;
     min-height: 100%;
     left: 18.75rem;
-}
-
-/** 文章内容相关开始 */
-.article-list {
-    box-sizing: border-box;
 }
 
 .article-item {
@@ -36,7 +26,6 @@
     border-bottom: 2px dashed #cccccc;
 }
 
-
 .article-comment-number {
     font-size: 1rem;
     line-height: 1rem;
@@ -54,376 +43,18 @@
     vertical-align: top;
 }
 
-
 /**--------------------------------------文章页脚开始--------------------------------------*/
-.article-foot {
-    font-size: 0.85rem;
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    -webkit-justify-content: space-between;
-    align-items: center;
-    -webkit-align-items: center;
-}
 
-.article-foot img {
-    width: 0.875rem;
-    height: 0.875rem;
-}
 
-.notebook,
-.copyright {
-    display: flex;
-    display: -webkit-flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    -webkit-justify-content: space-between;
-    align-items: center;
-    -webkit-align-items: center;
-    color: #9b9b9b;
-    line-height: 0.875rem;
-}
-
-/**支持作者*/
-.support-author {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: Center;
-    align-content: space-between;
-}
-
-.btn-donate {
-    cursor: pointer;
-    border-radius: 3.5rem;
-    color: #fff !important;
-    background-color: #f05050;
-    border-color: #f05050;
-    height: 2.375rem;
-    width: 6rem;
-    display: flex;
-    justify-content: center;
-    align-items: Center;
-    outline: none;
-}
-
-.btn-donate img {
-    width: 1rem;
-    height: 1rem;
-    margin-right: 0.25rem;
-}
-
-.support-author span {
-    color: #999;
-}
-
-.QR-container {
-    display: none;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-}
-
-.QR-code {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-
-.QR-code img {
-    width: 11rem;
-    height: 11rem;
-}
-
-/**文章内容页导航*/
-
-.article-nav {
-    box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-content: center;
-    border-top: 1px dashed #eee;
-}
-
-.nav-action {
-    line-height: normal !important;
-}
-
-.article-nav img {
-    width: 1rem;
-    height: 1rem;
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
-}
-
-.article-nav .prev,
-.article-nav .next {
-    display: -webkit-flex;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    align-content: center;
-}
-
-.article-footer {
-}
-
-.article-action {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-content: center;
-}
-
-.article-views img {
-    width: 1rem;
-    height: 1rem;
-}
-
-.article-views span {
-    font-size: 1rem;
-}
-
-.article-share {
-}
-
-.article-share img {
-    width: 1rem;
-    height: 1rem;
-}
-
-.article-random {
-}
-
-.article-random-title {
-    font-weight: 600;
-}
-
-.article-random-list {
-    list-style: disc !important;
-    line-height: 1.5rem;
-}
 
 /**--------------------------------------文章页脚结束--------------------------------------*/
 /**--------------------------------------评论相关开始--------------------------------------*/
 #comments {
 }
 
-.comment-summary {
-    padding: 1rem 0;
-    background: #fff;
-    text-align: center;
-    /*
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
-    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, 0.12);
-    */
-}
-
-.comment-item {
-    position: relative;
-    display: block;
-    background-color: #FFF;
-    border: 0;
-    border-radius: 0;
-    margin-top: 1rem;
-    padding: 1rem 1.25rem;
-    line-height: 1.5em;
-    overflow: hidden;
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-}
-
-.comment-parent {
-}
-
-.comment-children {
-    margin: 1rem 0 !important;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, .12), 0 2px 7px rgba(0, 0, 0, .1);
-}
-
-.comment-children:last-child {
-    margin-bottom: 0 !important;
-}
-
-.comment-info {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: center;
-    align-content: center;
-    font-size: 0.875rem;
-}
-
-.comment-info time {
-    color: #40a977;
-
-}
-
-.comment-author {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: center;
-}
-
-.comment-avatar {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 2rem;
-    margin-right: 0.625rem;
-}
-
-.comment-content {
-    padding: 0.625rem 0;
-}
-
-.comment-reply {
-    text-align: right;
-}
-
-.comment-reply-button {
-    width: 2rem;
-    height: 2rem;
-    line-height: 1rem;
-    border-radius: 2rem;
-    background-color: #FF545A;
-}
-
-.comment-reply-img {
-    width: 1rem;
-    height: 1rem;
-}
-
-.comment-respond {
-    position: relative;
-    border-radius: 2px;
-    background-color: #fff;
-    border: 0;
-    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
-}
-
-.comment-respond-title {
-    font-size: 1.25rem;
-}
-
-.comment-cancel-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 2rem;
-    background-color: #FF545A;
-}
-
-.comment-cancel-btn > img {
-    margin: 0.5rem;
-    width: 1rem;
-    height: 1rem;
-}
-
-.comment-form-group {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    align-content: center;
-    margin-bottom: 1rem;
-}
-
-.comment-form-group > .control-label {
-    width: 6.25rem;
-    max-width: 100%;
-    height: 2rem;
-    line-height: 2rem;
-    font-weight: 700;
-}
-
-.comment-form-group > .form-input {
-    width: calc(100% - 6.25rem);
-    max-width: 100%;
-    height: 2rem;
-    line-height: 2rem;
-}
-
-.comment-form-group > .form-textarea {
-    width: calc(100% - 6.25rem);
-    max-width: 100%;
-    line-height: 2rem;
-    resize: none;
-}
-
-.comment-submit-box {
-    text-align: right;
-}
-
-.comment-btn {
-    cursor: pointer;
-    border-radius: 3.5rem;
-    color: #fff !important;
-    background-color: #f05050;
-    border-color: #f05050;
-    height: 2.15rem;
-    width: 6rem;
-    font-size: 1rem;
-    text-align: center;
-}
-
 /**--------------------------------------------------------------------------------------*/
 /**--------------------------------------------------------------------------------------*/
 /**--------------------------------------------------------------------------------------*/
-.article-info {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #ddd;
-}
-
-.article-tag {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-items: center;
-    align-content: center;
-}
-
-.article-tag-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
-.article-tag > a {
-    font-size: 0.875rem;
-    font-weight: bold;
-
-    /*color: #fff;
-    font-size: 0.85rem;
-    height: 1.25rem;
-    line-height: 1.25rem;
-    display: inline-block;
-    padding: 0 0.5rem;
-    position: relative;
-    border-radius: 0 0.25rem 0.25rem 0;
-    background-color: #bbb;*/
-}
-
-.article-tag > a:before {
-    content: '# ';
-}
-
-.article-tag > a:hover {
-    border-bottom: 2px solid;
-}
 
 /*
 .article-tag > a {
@@ -468,57 +99,9 @@
 /**--------------------------------------------------------------------------------------*/
 /**--------------------------------------------------------------------------------------*/
 /**翻页相关开始*/
-.pagination {
-    display: flex;
-    display: -webkit-flex;
-    display: -moz-flex;
-    display: -ms-flex;
-    display: -o-flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center;
-    -webkit-justify-content: center;
-    align-items: center;
-    align-content: center;
-    line-height: normal !important;
-    text-align: center;
-}
-
-.pagination img {
-    width: 1.5rem;
-    height: 1.5rem;
-}
-
-.page-item {
-    width: 1.5rem;
-    height: 1.5rem;
-    background: #4d4d4d;
-    border-radius: 50%;
-    display: inline-block;
-    color: #fff;
-    line-height: 1.5rem;
-    font-size: 0.75rem;
-    margin: 0.25rem;
-}
-
-.page-current {
-    cursor: default;
-    background-color: #88acdb;
-}
-
-.pagination .next,
-.pagination .prev {
-    width: 1.5rem;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    margin: 0.25rem;
-}
 
 /**翻页相关结束*/
 /**页脚相关开始*/
-#footer {
-    text-align: center;
-}
 
 /**页脚相关结束*/
 /** 归档页相关开始 */

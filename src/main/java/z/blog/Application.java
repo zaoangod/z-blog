@@ -4,9 +4,12 @@ import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import spark.Spark;
 import z.blog.bootstrap.Bootstrap;
+import z.blog.controller.Content;
 import z.blog.controller.Home;
 import z.blog.kit.CacheKit;
+import z.blog.service.CommentService;
 import z.blog.service.ContentService;
+import z.blog.service.MetaService;
 import z.blog.service.SiteService;
 
 import java.util.Map;
@@ -18,13 +21,17 @@ public class Application {
 
     public static CacheKit CACHE;
     public static SiteService siteService;
+    public static MetaService metaService;
     public static ContentService contentService;
+    public static CommentService commentService;
 
     static {
         //缓存
         CACHE = CacheKit.cache();
         siteService = new SiteService();
+        metaService = new MetaService();
         contentService = new ContentService();
+        commentService = new CommentService();
     }
 
     public static void main(String[] args) {
@@ -71,10 +78,23 @@ public class Application {
             response.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
             //response.type("application/json");
         });
+        //
         Spark.get("/", Home.index);
+        //index
+        Spark.get("/index/:pageNum", Home.index);
+        //文章内容页面
+        Spark.get("/article/:aid", Content.post);
+        //归档
+        Spark.get("/archive", Home.archive);
+        Spark.get("/archive/:pageNum", Home.archive);
+        //分类
+        Spark.get("/category", Home.category);
+        Spark.get("/category/:mid/:pageNum", Home.category);
 
         //启用gzip
         Spark.after((a, b) -> b.header("Content-Encoding", "gzip"));
         log.info("http://127.0.0.1:{}", Spark.port());
+
+        contentService.getArchive(1, 20);
     }
 }

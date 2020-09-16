@@ -52,18 +52,6 @@ public class MdUtil {
                     if (node instanceof Image) {
                         attribute.put("title", attribute.get("alt"));
                     }
-                    if (node instanceof Code) {
-                        // log.info("{}", ((Code) node).getLiteral().toString());
-                    }
-                    if (node instanceof FencedCodeBlock) {
-                        log.info("{}", tagName);
-                    }
-                    if (tagName.equalsIgnoreCase("code")) {
-                        log.info("{}", attribute);
-                    }
-                    if (node instanceof IndentedCodeBlock) {
-                        log.info("{},{}", tagName, ((IndentedCodeBlock) node).getLiteral().toString());
-                    }
                 })
                 .extensions(extensions)
                 .build();

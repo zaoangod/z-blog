@@ -136,55 +136,6 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>prod</id>
-            <properties>
-                <profiles.active>prod</profiles.active>
-            </properties>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/java</directory>
-                        <filtering>false</filtering>
-                        <excludes>
-                            <exclude>**/*.java</exclude>
-                        </excludes>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <profiles.active>dev</profiles.active>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/java</directory>
-                        <filtering>false</filtering>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                        <filtering>false</filtering>
-                    </resource>
-                    <resource>
-                        <directory>src/main/test</directory>
-                        <filtering>false</filtering>
-                    </resource>
-                    <resource>
-                        <directory>src/test/resources</directory>
-                        <filtering>false</filtering>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
         <finalName>blog</finalName>
         <plugins>

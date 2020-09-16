@@ -48,9 +48,7 @@ public class JooqConfig {
         if (dataSource == null) {
             dataSource = new HikariDataSource();
             dataSource.setAutoCommit(true);
-            //dataSource.setJdbcUrl("jdbc:sqlite:blog.db");
-            //dataSource.setJdbcUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\src\\main\\resources\\z-blog.db");
-            dataSource.setJdbcUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\blog.db");
+            dataSource.setJdbcUrl("jdbc:sqlite:src/main/resources/blog.db");
             dataSource.setPoolName("blog-db-pool");
         }
         return dataSource;

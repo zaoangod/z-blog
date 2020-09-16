@@ -27,23 +27,23 @@
 
 ::selection {
     color: #fff;
-    background-color: #ff545a !important;
+    background-color: #ff7075 !important;
 }
 
 ::-moz-selection {
     color: #fff;
-    background-color: #ff545a !important;
+    background-color: #ff7075 !important;
 }
 
 html {
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
-    font-family: "Microsoft YaHei", Consolas, Helvetica, Arial, sans-serif, "Source Code Pro", Menlo;
+    font-family: Consolas, "Liberation Mono", Menlo, Monaco, "Source Han Sans CN", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
 }
 
 body {
+    font-family: Consolas, "Liberation Mono", Menlo, Monaco, "Source Han Sans CN", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
     background-color: #eaeaea;
-    font-family: "Microsoft YaHei", Consolas, Helvetica, Arial, sans-serif, "Source Code Pro", Menlo;
 }
 
 h1, h2, h3, h4, h5, h6 {

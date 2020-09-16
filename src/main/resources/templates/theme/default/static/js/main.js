@@ -91,7 +91,8 @@ function cancelReply() {
     let respond = document.getElementById('respond');
     respond.remove();
     let commentsContainer = document.getElementById('comments');
-    commentsContainer.append(respond);
+    let first = commentsContainer.firstChild;
+    commentsContainer.insertBefore(respond, first);
     document.getElementById('cid').value = '';
     document.getElementById('content').value = '';
 }

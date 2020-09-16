@@ -1,0 +1,87 @@
+#set(commentPage = comments())
+<div id="comments" class="util--p-y-4">
+    #if(commentCount == 0)
+    <div class="comment-summary">暂无评论</div>
+    #else
+    <div class="comment-summary">已有 ${commentCount} 条评论</div>
+    <ol class="comment-list">
+        #for(comment: commentPage.list)
+        <li id="comment${comment.cid}" class="comment-item comment-parent">
+            <div class="comment-info">
+                <div class="comment-author">
+                    <img class="comment-avatar" src="${themeUrl()+'/img/head.png'}" alt="${comment.author}">
+                    <span>${comment.author}</span>
+                </div>
+                <time datetime="${fmtDate(comment.createTime,'yyyy-MM-dd HH:mm:ss')}">${fmtDate(comment.createTime, 'yyyy-MM-dd HH:mm')}</time>
+            </div>
+            <div class="comment-content"><p>${comment.content}</p></div>
+            <div class="comment-reply">
+                <button class="comment-reply-button" cid="${comment.cid}" respond_container_id="commentReplyBtn${comment.cid}">
+                    <img class="comment-reply-img" src="${themeUrl()+'/img/icon/reply.svg'}">
+                </button>
+            </div>
+            <div id="commentReplyBtn${comment.cid}"></div>
+            #if(comment.children) #call comment_children(comment.children) #end
+        </li>
+        #end
+    </ol>
+    #end
+
+    <div id="respond" class="comment-respond percent-p-x util--p-y-3 util--m-t-4">
+        <p class="comment-respond-title">添加新评论</p>
+        <button id="commentCancelBtn" type="button" class="comment-cancel-btn" style="display: none;" onclick="cancelReply();">
+            <img src="${themeUrl()+'/img/icon/close.svg'}">
+        </button>
+
+        <!--<input type="hidden" name="csrf_token" value="${csrf_token}">-->
+        <input type="hidden" id="aid" name="aid" value="${article.aid}">
+        <input type="hidden" id="parent" name="parent" value="0">
+
+        <div class="comment-form-group util--m-t-2">
+            <label for="author" class="control-label">昵称</label>
+            <input id="author" name="author" class="form-input" type="text" value="" placeholder="请输入您的昵称" required="">
+        </div>
+        <div class="comment-form-group">
+            <label for="mail" class="control-label">邮箱</label>
+            <input id="mail" name="mail" class="form-input" type="text" value="" placeholder="请输入您的邮箱地址" required="">
+        </div>
+        <div class="comment-form-group">
+            <label for="url" class="control-label">网站</label>
+            <input id="url" name="url" class="form-input" type="text" value="" placeholder="可不填" required="">
+        </div>
+        <div class="comment-form-group">
+            <label for="mail" class="control-label">内容</label>
+            <textarea id="content" name="content" class="form-textarea" rows="5" cols="10" maxlength="500" placeholder="除特别声明外，本站采用 CC BY-NC-SA 协议进行授权，转载请注明出处！" required=""></textarea>
+        </div>
+        <div class="comment-submit-box">
+            <button type="button" id="submit" class="comment-btn" onclick="subComment();">提交评论</button>
+        </div>
+    </div>
+</div>
+
+#macro comment_children(List children)
+#if(children)
+<ol class="comment-list">
+    #for(child: children)
+    <li id="comment${child.cid}" class="comment-item comment-children">
+        <div class="comment-info">
+            <div class="comment-author">
+                <img class="comment-avatar" src="${themeUrl()+'/img/head.png'}" alt="${child.author}">
+                <span>${child.author}</span>
+            </div>
+            #set(childCommentDate = fmtDate(child.created,'yyyy-MM-dd HH:mm:ss'))
+            <time datetime="${childCommentDate}">${childCommentDate}</time>
+        </div>
+        <div class="comment-content"><p>${child.content}</p></div>
+        <div class="comment-reply">
+            <button class="comment-reply-button" cid="${child.cid}" respond_container_id="commentReplyBtn${child.cid}">
+                <img class="comment-reply-img" src="${themeUrl()+'/img/icon/reply.svg'}">
+            </button>
+        </div>
+        <div id="commentReplyBtn${child.cid}"></div>
+        #if(child.children) #call comment_children(child.children) #end
+    </li>
+    #end
+</ol>
+#end
+#end

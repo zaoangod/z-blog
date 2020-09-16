@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static z.blog.bootstrap.JooqConfig.dslContext;
+import static z.blog.bootstrap.JooqConfig.dsl;
 import static z.blog.mapping.tables.ARTICLE.T_ARTICLE;
 import static z.blog.mapping.tables.META.T_META;
 import static z.blog.mapping.tables.RELATIONSHIP.T_RELATIONSHIP;
@@ -27,15 +27,16 @@ public class MetaService {
      * @param meta 查询参数
      */
     public List<Meta> getMeta(Meta meta) {
-        SelectJoinStep<Record> data = dslContext().select().from(T_META);
+        log.info("-> 根据类型查询Meta列表");
+        SelectJoinStep<Record> data = dsl.select().from(T_META);
         if (meta != null && meta.getMid() != null) {
             data.where(T_META.MID.eq(meta.getMid()));
         }
         if (meta != null && meta.getTitle() != null) {
-            data.where(T_META.NAME.eq(meta.getTitle()));
+            data.where(T_META.TITLE.eq(meta.getTitle()));
         }
-        if (meta != null && meta.getSlug() != null) {
-            data.where(T_META.SLUG.eq(meta.getSlug()));
+        if (meta != null && meta.getFlag() != null) {
+            data.where(T_META.FLAG.eq(meta.getFlag()));
         }
         if (meta != null && meta.getType() != null) {
             data.where(T_META.TYPE.eq(meta.getType()));
@@ -49,29 +50,25 @@ public class MetaService {
      * @param type 类型, tag or category
      */
     public Map<String, List<Article>> getMeta(String type) {
-        if (type != null) {
-            List<Meta> metas = this.getMeta(new Meta().setType(type));
-            if (null != metas) {
-                return metas.stream().collect(Collectors.toMap(Meta::getTitle, this::getMetaContents));
-            } else {
-                return new HashMap<>();
-            }
+
+        if (type == null) {
+            return new HashMap<>();
         }
-        return new HashMap<>();
+        List<Meta> meta = this.getMeta(new Meta().setType(type));
+
+        if (null != meta && meta.size() > 0) {
+            return meta.stream().collect(Collectors.toMap(Meta::getTitle, this::getMetaArticle));
+        } else {
+            return new HashMap<>();
+        }
     }
 
-    private List<Article> getMetaContents(Meta m) {
-        List<Integer> aidList = dslContext()
-                .select()
-                .from(T_RELATIONSHIP)
-                .where(T_RELATIONSHIP.MID.eq(m.getMid()))
-                .fetchInto(Relationship.class)
-                .stream()
-                .map(Relationship::getAid)
-                .collect(Collectors.toList());
+    private List<Article> getMetaArticle(Meta m) {
+        List<Integer> aidList = dsl.select().from(T_RELATIONSHIP).where(T_RELATIONSHIP.MID.eq(m.getMid())).fetchInto(Relationship.class)
+                .stream().map(Relationship::getAid).collect(Collectors.toList());
         if (aidList.size() == 0) {
             return new ArrayList<>();
         }
-        return dslContext().select().from(T_ARTICLE).where(T_ARTICLE.AID.in(aidList)).orderBy(T_ARTICLE.CREATED).fetchInto(Article.class);
+        return dsl.select(T_ARTICLE.AID, T_ARTICLE.TITLE).from(T_ARTICLE).where(T_ARTICLE.AID.in(aidList)).orderBy(T_ARTICLE.CREATE_TIME).fetchInto(Article.class);
     }
 }

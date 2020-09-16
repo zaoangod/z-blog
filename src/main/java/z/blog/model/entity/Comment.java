@@ -16,6 +16,10 @@ public class Comment {
     private String agent;
     private String content;
     private String type;
-    private Integer status;
+    private String status;
     private Integer createTime;
+
+    public static Comment get() {
+        return new Comment();
+    }
 }

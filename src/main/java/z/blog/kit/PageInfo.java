@@ -1,8 +1,13 @@
 package z.blog.kit;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 /*
  * The MIT License (MIT)
  *
@@ -38,6 +43,8 @@ import java.util.List;
  * 项目地址 : http://git.oschina.net/free/Mybatis_PageHelper
  */
 @Getter
+@Setter
+@Accessors(chain = true)
 public class PageInfo<T> {
     /**
      * 总记录数
@@ -109,7 +116,7 @@ public class PageInfo<T> {
      */
     private void Handle() {
         //当前页多少条数据
-        this.size = this.list.size();
+        this.size = list.size();
         //总页数
         this.pages = (this.total / this.pageSize + ((this.total % this.pageSize == 0) ? 0 : 1));
         //计算导航页
@@ -214,6 +221,24 @@ public class PageInfo<T> {
         return sb.toString();
     }
 
+    public <R> PageInfo<R> map(Function<? super T, ? extends R> mapper) {
+        PageInfo<R> pageInfo = new PageInfo<>();
+        if (this.list != null) {
+            List<R> r = list.stream().map(mapper).collect(Collectors.toList());
+            pageInfo.setList(r).setTotal(total).setPageNum(pageNum).setPageSize(pageSize);
+            //计算参数
+            Handle();
+        }
+        return pageInfo;
+    }
+
+    public PageInfo<T> peek(Consumer<T> consumer) {
+        if (null != list) {
+            this.list = list.stream().peek(consumer).collect(Collectors.toList());
+        }
+        return this;
+    }
+
     public PageInfo(List<T> list, int total, int pageNum, int pageSize) {
         //当前页码
         this.pageNum = pageNum;
@@ -223,8 +248,6 @@ public class PageInfo<T> {
         this.total = total;
         //数据列表
         this.list = list;
-        //当前页多少条数据
-        this.size = list.size();
         //计算参数
         Handle();
     }

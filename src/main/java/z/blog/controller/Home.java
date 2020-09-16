@@ -1,12 +1,7 @@
 package z.blog.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import spark.Request;
-import spark.Response;
 import spark.Route;
-import z.blog.kit.PageInfo;
-import z.blog.model.dto.Type;
-import z.blog.model.entity.Article;
 import z.blog.model.entity.Meta;
 
 import java.util.HashMap;
@@ -14,8 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static z.blog.bootstrap.Constant.OPT_PAGE_LIMIT;
-import static z.blog.bootstrap.Constant.OPT_SITE_TITLE;
+import static z.blog.Application.contentService;
+import static z.blog.Application.metaService;
+import static z.blog.model.dto.Type.CATEGORY;
 
 /**
  * @author zaoangod
@@ -26,7 +22,7 @@ public class Home extends Base {
     /**
      * 首页
      */
-    public static Route index = (Request a, Response b) -> {
+    public static Route index = (a, b) -> {
         //当前页码
         Integer pageNum = Optional.ofNullable(a.params(":pageNum")).map(Integer::valueOf).orElse(1);
         Map<String, Object> data = new HashMap<>();
@@ -40,7 +36,7 @@ public class Home extends Base {
     /**
      * 归档
      */
-    /*public static Route archive = (Request a, Response b) -> {
+    public static Route archive = (a, b) -> {
         //当前页码
         Integer pageNum = Optional.ofNullable(a.params(":pageNum")).map(Integer::valueOf).orElse(1);
         Map<String, Object> data = new HashMap<>();
@@ -49,43 +45,38 @@ public class Home extends Base {
         data.put("isArchive", true);
         data.put("urlPrefix", "/archive");
         return t(data, "archive");
-    };*/
+    };
 
     /**
      * 分类列表页
      */
-    /*public static Route category = (Request a, Response b) -> {
-        Meta meta = new Meta().setType(Type.CATEGORY);
-        List<Meta> list = metaService.getMetaList(meta);
+    public static Route category = (a, b) -> {
         Map<String, Object> data = new HashMap<>();
-        data.put("title", "分类 - " + ENV.get(OPT_SITE_TITLE));
-        data.put("categories", list);
+        data.put("title", "分类");
         data.put("isCategory", true);
-        return theme(data, "category");
-    };*/
+        data.put("urlPrefix", "/category");
+        return t(data, "category");
+    };
 
     /**
      * 分类文章页
      */
-    /*public static Route categoryInfo = (Request a, Response b) -> {
+    public static Route categoryInfo = (a, b) -> {
         //分页相关参数
-        Integer mid = Optional.ofNullable(a.params(":mid")).map(Integer::valueOf).orElse(0);
         Integer pageNum = Optional.ofNullable(a.params(":pageNum")).map(Integer::valueOf).orElse(1);
-        Integer pageSize = Optional.ofNullable((String) ENV.get(OPT_PAGE_LIMIT)).map(Integer::valueOf).orElse(20);
-        //
-        Meta meta = new Meta().setMid(mid).setType(Type.CATEGORY);
-        meta = metaService.getMetaList(meta).stream().findFirst().orElse(meta);
-        //文章分页
-        PageInfo<Article> pageInfo = contentService.getArticle(mid, pageNum, pageSize);
-        //
+        Integer mid = Optional.ofNullable(a.params(":mid")).map(Integer::valueOf).orElse(0);
+
+        Meta meta = new Meta().setMid(mid);
+        meta = metaService.getMeta(meta).stream().findFirst().orElse(meta);
+
         Map<String, Object> data = new HashMap<>();
-        data.put("title", "分类 - " + (mid == 0 ? ENV.get(OPT_SITE_TITLE) : meta.getName()));
-        data.put("category", meta);
-        data.put("pageInfo", pageInfo);
+        data.put("title", "分类 - " + (meta.getTitle() == null ? "" : meta.getTitle()));
         data.put("isCategory", true);
+        data.put("category", meta);
+        data.put("pageNum", pageNum);
         data.put("urlPrefix", "/category");
-        return theme(data, "category");
-    };*/
+        return t(data, "category");
+    };
 
     /**
      * 标签列表页
