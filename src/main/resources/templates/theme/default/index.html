@@ -6,16 +6,15 @@
 <body>
 <main class="main-container">
     #include('./partial/header.html')
-    <div class="article-list util--m-a-4">
+    <div class="content-box util--m-a-4" >
         #set(pageInfo = articles())
         #for(item: pageInfo.list)
-        #set(articleLink = permalink(item))
         <article class="article-item util--m-b-4">
             <header class="article-header percent-p-x util--p-t-4 util--p-b-2">
-                <a class="article-title" href="${articleLink}">${item.title}</a>
+                <a class="article-title" href="/article/${item.aid}">${item.title}</a>
                 <div class="article-meta">
                     <img class="util--m-r-1" title="分类" src="${themeUrl()+'/img/icon/category.svg'}" alt="分类">
-                    <a href="" class="util--m-r-1">${item.category}</a>
+                    <a href="#" class="util--m-r-1">${item.category}</a>
                     <img class="util--m-r-1" title="发布日期" src="${themeUrl()+'/img/icon/date.svg'}" alt="发布日期">
                     <span>${fmtDate(item.createTime, 'yyyy-MM-dd')}</span>
                 </div>
@@ -29,15 +28,15 @@
                     #if(tags)
                     <img class="article-tag-icon util--m-r-1" src="${themeUrl()+'/img/icon/tag.svg'}" alt="">
                     #for(tag: tags)
-                    <a href="${prefix}/${tag}" class="util--m-x-1">${tag}</a>
+                    <a href="#" class="util--m-x-1">${tag}</a>
                     #end
                     #end
                 </div>
-                <a href="${articleLink}" title="${item.title}" target="_self">- 阅读更多 -</a>
+                <a href="/article/${item.aid}" title="${item.title}" target="_self">- 阅读更多 -</a>
             </div>
         </article>
         #end
-        #include('./partial/pagination.html', {pageInfo: pageInfo, prefix: urlPrefix})
+        #include('./partial/pagination.html', {pageInfo: pageInfo, url: url})
         #include('./partial/footer.html')
     </div>
 </main>

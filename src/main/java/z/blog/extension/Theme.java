@@ -14,7 +14,6 @@ import z.blog.model.dto.Type;
 import z.blog.model.entity.Article;
 import z.blog.model.entity.Meta;
 
-import javax.print.DocFlavor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +21,8 @@ import java.util.Optional;
 
 import static z.blog.Application.*;
 import static z.blog.bootstrap.Constant.URL_PREFIX_ARTICLE;
-import static z.blog.model.dto.Type.*;
+import static z.blog.model.dto.Type.POST;
+import static z.blog.model.dto.Type.PUBLISH;
 
 /**
  * 主题类函数
@@ -89,37 +89,6 @@ public final class Theme {
      */
     public static Article next(Article article) {
         return contentService.getArticle(article, Type.NEXT);
-    }
-
-    /**
-     * 当前文章的链接
-     *
-     * @return 文章链接
-     */
-    public static String permalink() {
-        Article article = article();
-        return Optional.ofNullable(article).map(Theme::permalink).orElse("");
-    }
-
-    /**
-     * 文章的链接
-     *
-     * @param article 文章对象
-     * @return 文章链接
-     */
-    public static String permalink(Article article) {
-        return permalink(article.getAid(), article.getFlag());
-    }
-
-    /**
-     * 文章链接
-     *
-     * @param cid  文章ID
-     * @param slug 文章标签
-     * @return 文章链接
-     */
-    public static String permalink(Integer cid, String slug) {
-        return "/" + URL_PREFIX_ARTICLE + "/" + (StrKit.nBlank(slug) ? slug : cid);
     }
 
     /**
@@ -275,50 +244,19 @@ public final class Theme {
     }
 
     /**
-     * 获取标签列表
-     *
-     * @return 标签列表
-     */
-    public static List<Meta> tagList() {
-        log.info("-> 获取标签列表");
-        Meta meta = new Meta().setType(TAG);
-        return meta(meta);
-    }
-
-    /**
-     * 获取分类列表
-     *
-     * @return 分类列表
-     */
-    public static List<Meta> categoryList() {
-        Meta meta = new Meta().setType(CATEGORY);
-        return meta(meta);
-    }
-
-    /**
      * 获取分类/标签列表
      *
      * @return 分类/标签列表
      */
-    public static List<Meta> meta(Meta meta) {
-        return metaService.getMeta(meta);
+    public static List<Meta> meta(String type) {
+        if (type != null && type.length() > 0) {
+            type = type.toLowerCase();
+            Meta meta = new Meta().setType(type);
+            return metaService.getMeta(meta);
+        } else {
+            return Collections.emptyList();
+        }
     }
-
-    /**
-     * 分类/标签的文章分页
-     *
-     * @return 分类/标签的文章分页
-     */
-    /*public static PageInfo<Article> articles(Integer mid, Integer limit) {
-        ValueStack v = InterpretContext.current().getValueStack();
-        //分页相关参数
-        Integer pageNum = Optional.ofNullable((Integer) v.getValue("pageNum")).orElse(1);
-        Integer pageSize = Optional.ofNullable(limit).orElse((Integer) ENV.get(OPT_PAGE_LIMIT));
-        //分页查询
-        PageInfo<Article> pageInfo = contentService.getArticle(mid, pageNum, pageSize);
-        v.setLocal("pageNum", pageNum);
-        return pageInfo;
-    }*/
 
     /**
      * 获取根据分类/标签查询的文章列表
@@ -332,4 +270,14 @@ public final class Theme {
         return contentService.getArticle(mid, pageNum, 20);
     }
 
+    /**
+     * 获取根据分类/标签查询的文章列表
+     *
+     * @return 根据分类/标签查询的文章列表
+     */
+    public static PageInfo<Article> archive() {
+        ValueStack vs = InterpretContext.current().getValueStack();
+        Integer pageNum = Optional.ofNullable((Integer) vs.getValue("pageNum")).orElse(1);
+        return contentService.getArchive(pageNum, 20);
+    }
 }

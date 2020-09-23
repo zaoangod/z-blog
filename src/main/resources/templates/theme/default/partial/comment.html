@@ -1,5 +1,5 @@
 #set(commentPage = comments())
-<div id="comments" class="comment-box percent-p-x util--m-y-4">
+<div id="comments" class="comment-box percent-p-x util--p-y-4">
     <div id="respond" class="comment-respond util--p-a-2 util--m-t-4">
         <div class="comment-form-box">
             <div>
@@ -16,8 +16,8 @@
                 <input id="url" name="url" class="form-input" type="text" placeholder="网址" required="">
             </div>
             <textarea id="content" name="content" class="form-textarea" rows="5" cols="10" maxlength="500" placeholder="除特别声明外，本站采用 CC BY-NC-SA 协议进行授权，转载请注明出处！" required=""></textarea>
-            <div class="comment-submit-box">
-                <button type="button" id="submit" class="comment-btn" onclick="subComment();">提交评论</button>
+            <div>
+                <span class="comment-btn" onclick="subComment();">提交</span>
             </div>
         </div>
     </div>

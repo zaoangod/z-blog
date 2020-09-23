@@ -4,14 +4,53 @@
     #include('./partial/head.html')
 </head>
 <body>
-
 <main class="main-container">
     #include('./partial/header.html')
-    <div class="util--m-a-4" style="position: absolute;top: 0;right: 0;min-height: 100%;left: 18.75rem;">
-        #set(list = categoryList())
-        #for(item: list)
-        <a class="category-a" href="/category/${item.mid}">${item.title}</a>
-        #end
+    <div class="content-box util--m-a-4">
+        <div class="meta-box percent-p-x">
+            #if(category)
+            <header class="meta-header util--p-y-4">
+                <h3>${category.title}</h3>
+                <p class="util--p-y-1">目前共计 ${category.count} 篇文章</p>
+            </header>
+            <div class="util--p-y-4">
+                #set(list = meta('category'))
+                #for(item: list)
+                <a class="meta-a util--p-y-1 util--m-a-1" href="/meta/${item.mid}">${item.title}(${item.count})</a>
+                #end
+            </div>
+            #set(pageInfo = meta(category.mid))
+            #set(list = pageInfo.list)
+            <ul class="util--p-y-4">
+                #for(item: list)
+                <li>
+                    <a style="display: inline-block;width: 100%;" href="/article/${item.aid}">
+                        <div class="meta-item util--p-a-1">
+                            <span class="meta-title">${item.title}</span>
+                            <div class="meta-date">
+                                <img class="util--m-r-1" src="${themeUrl()+'/img/icon/date.svg'}" alt="">
+                                <span>${fmtDate(item.createTime, 'YYYY-MM-dd')}</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                #end
+            </ul>
+            #include('./partial/pagination.html', {pageInfo: pageInfo, url: url})
+            #else
+            <header class="meta-header util--p-y-4">
+                <h3>分类</h3>
+                <p class="util--p-y-1">目前共计 ${statistic().category} 个分类</p>
+            </header>
+            <div class="util--p-y-4">
+                #set(list = meta('category'))
+                #for(item: list)
+                <a class="meta-a util--p-y-1 util--m-a-1" href="/meta/${item.mid}">${item.title}(${item.count})</a>
+                #end
+            </div>
+            #end
+        </div>
+        #include('./partial/footer.html')
     </div>
 </main>
 </body>

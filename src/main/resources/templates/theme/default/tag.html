@@ -1,52 +1,57 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html lang="zh">
 <head>
     #include('./partial/head.html')
 </head>
 <body>
-<div class="main-container">
+<main class="main-container">
     #include('./partial/header.html')
-    <main class="content-wrap util--m-a-4">
-        #if(urlPrefix)
-        <div class="tag-box percent-p-x util--p-y-4">
-            <header class="tag-header util--p-y-4">
-                <h4>标签: ${tag.name}</h4>
-                <p class="util--p-t-1">共计 ${tag.count} 篇文章</p>
+    <div class="content-box util--m-a-4">
+        <div class="meta-box percent-p-x">
+            #if(tag)
+            <header class="meta-header util--p-y-4">
+                <h3>${tag.title}</h3>
+                <p class="util--p-y-1">目前共计 ${tag.count} 篇文章</p>
             </header>
-            <div class="tag-list util--p-y-4">
-                #for(item: pageInfo.list)
-                <article class="tag-item util--p-x-4 util--p-b-2 util--p-b-1 util--p-t-3">
-                    <a class="tag-title" href="/article/${item.aid}">${item.title}</a>
-                    <div class="tag-date">
-                        <img class="util--m-r-1" src="${themeUrl('/img/icon/date.svg')}" alt="">
-                        <span>${fmtDate(item.created, 'YYYY-MM-dd')}</span>
-                    </div>
-                </article>
+            <div class="util--p-y-4">
+                #set(list = meta('tag'))
+                #for(item: list)
+                <a class="meta-a util--p-y-1 util--m-a-1" href="/meta/${item.mid}">${item.title}(${item.count})</a>
                 #end
             </div>
-        </div>
-        #include('./partial/pageNav.html', {pageInfo: pageInfo, prefix: urlPrefix})
-        #else
-        <div class="tag-box percent-p-x util--p-y-4">
-            <header class="tag-header util--p-y-4">
-                <h4>标签</h4>
-                <p class="util--p-t-1">目前共计 ${statistic().tag} 个标签</p>
+            #set(pageInfo = meta(tag.mid))
+            #set(list = pageInfo.list)
+            <ul class="util--p-y-4">
+                #for(item: list)
+                <li>
+                    <a style="display: inline-block;width: 100%;" href="/article/${item.aid}">
+                        <div class="meta-item util--p-a-1">
+                            <span class="meta-title">${item.title}</span>
+                            <div class="meta-date">
+                                <img class="util--m-r-1" src="${themeUrl()+'/img/icon/date.svg'}" alt="">
+                                <span>${fmtDate(item.createTime, 'YYYY-MM-dd')}</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                #end
+            </ul>
+            #include('./partial/pagination.html', {pageInfo: pageInfo, url: url})
+            #else
+            <header class="meta-header util--p-y-4">
+                <h3>标签</h3>
+                <p class="util--p-y-1">目前共计 ${statistic().category} 个标签</p>
             </header>
-            <div class="tag-list util--p-b-4">
-                #for (item : tags)
-                #--
-                #set(color_random = random(1, 3))
-                --#
-                <a class="tag-a util--p-b-1" href="/tag/${item.mid}">
-                    <span class="tag-front tag-front-${color_random}"></span>
-                    <span class="tag-body tag-body-${color_random} util--p-l-2">${item.name}（${item.count}）</span>
-                </a>
+            <div class="util--p-y-4">
+                #set(list = meta('tag'))
+                #for(item: list)
+                <a class="meta-a util--p-y-1 util--m-a-1" href="/meta/${item.mid}">${item.title}(${item.count})</a>
                 #end
             </div>
+            #end
         </div>
-        #end
         #include('./partial/footer.html')
-    </main>
-</div>
+    </div>
+</main>
 </body>
 </html>

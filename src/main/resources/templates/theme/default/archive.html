@@ -4,52 +4,50 @@
     #include('./partial/head.html')
 </head>
 <body>
-
-
 <main class="main-container">
     #include('./partial/header.html')
-    <main class="content-wrap util--m-a-4">
-        <div class="archive-box percent-p-x util--p-y-4">
-            <h4 class="archive-summary util--p-y-4">共计 ${statistic().post} 篇文章</h4>
-            <div class="archive-list">
-                #-- 分页对象 --#
-                #set(pageInfo = articles())
-                #-- 文章列表 --#
-                #set(list = pageInfo.list)
-                #for(article: list)
-                <div class="archive-item percent-p-x">
-                    #-- 当前循环的归档时间 --#
-                    #set(currentArchiveDate = fmtDate(article.createTime, 'yyyy-MM'))
-                    #-- 处理第一次循环 --#
-                    #if(for.index == 1)
-                    <p class="archive-date util--p-t-3">${currentArchiveDate}</p>
-                    #else
-                    #-- 处理非第一次循环 --#
-                    #set(previousArchiveDate = fmtDate(list[for.index-2].createTime, 'yyyy-MM'))
-                    #if(previousArchiveDate != currentArchiveDate)
-                    <p class="archive-date util--p-x-2 util--p-t-3">${currentArchiveDate}</p>
-                    #end
-                    #end
-                    <article class="archive-content util--p-x-2 util--p-y-2">
-                        <a class="archive-title" href="${(permalink(article))}">${article.title}</a>
-                        <div class="archive-meta">
-                            <div class="archive-item-date">
+    <div class="content-box util--m-a-4">
+        <div class="archive-box percent-p-x">
+            <header class="archive-header util--p-y-4">
+                <h3>归档</h3>
+                <p class="util--p-y-1">目前共计 ${statistic().post} 篇文章</p>
+            </header>
+            #set(pageInfo = archive())
+            #set(list = pageInfo.list)
+            <ul class="util--p-y-4">
+                #for(item: list)
+                #-- 处理归档日期开始 --#
+                #set(currentArchiveDate = fmtDate(item.createTime, 'yyyy-MM'))
+                #if(for.index == 1)
+                <li class="util--p-y-1">
+                    <h2>${currentArchiveDate}</h2>
+                </li>
+                #else
+                #set(previousArchiveDate = fmtDate(list[for.index-2].createTime, 'yyyy-MM'))
+                #if(previousArchiveDate != currentArchiveDate)
+                <li class="util--p-y-1">
+                    <h2>${currentArchiveDate}</h2>
+                </li>
+                #end
+                #end
+                #-- 处理归档日期结束 --#
+                <li>
+                    <a style="display: inline-block;width: 100%;" href="/article/${item.aid}">
+                        <div class="archive-item util--p-a-1">
+                            <span class="archive-title">${item.title}</span>
+                            <div class="archive-date">
                                 <img class="util--m-r-1" src="${themeUrl()+'/img/icon/date.svg'}" alt="">
-                                <span>${fmtDate(article.createTime, 'MM-dd')}</span>
-                            </div>
-                            <div class="archive-item-category">
-                                <img class="util--m-r-1" src="${themeUrl()+'/img/icon/category.svg'}" alt="分类">
-                                <a href="">${article.category}</a>
+                                <span>${fmtDate(item.createTime, 'YYYY-MM-dd')}</span>
                             </div>
                         </div>
-                    </article>
-                </div>
+                    </a>
+                </li>
                 #end
-            </div>
+            </ul>
         </div>
-        #-- #include('./partial/pageNav.html', {pageInfo: pageInfo, prefix: urlPrefix}) --#
+        #include('./partial/pagination.html', {pageInfo: pageInfo, url: url})
         #include('./partial/footer.html')
-    </main>
+    </div>
 </main>
 </body>
 </html>

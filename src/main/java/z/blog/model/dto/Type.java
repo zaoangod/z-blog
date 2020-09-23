@@ -1,9 +1,5 @@
 package z.blog.model.dto;
 
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-
 public interface Type {
 
     /**

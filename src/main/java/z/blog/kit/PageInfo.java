@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -109,7 +110,7 @@ public class PageInfo<T> {
     /**
      * 结果集
      */
-    private List<T> list;
+    private List<T> list = Collections.emptyList();
 
     /**
      * 重新计算参数

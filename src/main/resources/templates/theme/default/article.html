@@ -6,12 +6,11 @@
 <body>
 <main class="main-container">
     #include('./partial/header.html')
-    <div class="article-list util--m-a-4">
-        #set(articleLink = permalink(article))
+    <div class="content-box util--m-a-4">
         <article class="article-item">
             <!-- 文章信息 -->
             <header class="article-header percent-p-x util--p-t-4 util--p-b-2">
-                <a class="article-title" href="${articleLink}">${article.title}</a>
+                <a class="article-title" href="${url}/${article.aid}">${article.title}</a>
                 <div class="article-meta">
                     <img class="util--m-r-1" title="分类" src="${themeUrl()+'/img/icon/category.svg'}" alt="分类">
                     <a href="" class="util--m-r-1">${article.category}</a>
@@ -44,7 +43,7 @@
             </div>
 
             <!-- 恰饭 -->
-            <div class="support-author util--m-y-4">
+            <div class="support-author util--p-y-4">
                 <button id="donate" class="donate-author util--m-y-1"><img src="${themeUrl()+'/img/icon/donate.svg'}" alt="">赞赏</button>
                 <span>如果觉得我的文章对你有用，请随意赞赏</span>
                 <div id="QR" class="qr-code-box util--m-y-2">

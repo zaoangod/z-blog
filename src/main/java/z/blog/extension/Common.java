@@ -2,12 +2,10 @@ package z.blog.extension;
 
 import jetbrick.template.JetAnnotations;
 import jetbrick.template.runtime.InterpretContext;
+import lombok.extern.slf4j.Slf4j;
 import z.blog.model.dto.Statistic;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -22,6 +20,7 @@ import static z.blog.bootstrap.Constant.*;
  *
  * @author zaoangod
  */
+@Slf4j
 @JetAnnotations.Functions
 public final class Common {
 
@@ -210,13 +209,10 @@ public final class Common {
      * @param patten   日期格式(patten = yyyy-MM-dd HH:mm:ss)
      * @return 格式化后的日期
      */
-    public static String fmtDate(Integer unixTime, String patten) {
-        if (unixTime == null || patten == null) {
-            return "";
-        }
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(patten);
-        Instant instant = Instant.ofEpochMilli(unixTime);
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault()).format(dtf);
+    public static String fmtDate(long unixTime, String patten) {
+        unixTime = unixTime * 1000;
+        SimpleDateFormat format = new SimpleDateFormat(patten);
+        return format.format(unixTime);
     }
 
     /**

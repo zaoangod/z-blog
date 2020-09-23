@@ -78,13 +78,6 @@ function subComment() {
     });
 }
 
-//代码高亮
-function codeHighlight() {
-    document.querySelectorAll('pre code').forEach((i) => {
-        hljs.highlightBlock(i);
-    });
-}
-
 function cancelReply() {
     let commentCancelBtn = document.getElementById('commentCancelBtn');
     commentCancelBtn.style.display = 'none';
@@ -98,8 +91,6 @@ function cancelReply() {
 }
 
 window.onload = () => {
-    //代码高亮
-    codeHighlight();
     //
     /*document.getElementById('showBar').addEventListener('click', function () {
         document.getElementById('mobileBar').style.display;

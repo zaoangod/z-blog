@@ -1,26 +1,23 @@
 package z.blog.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.*;
+import org.jooq.Condition;
+import org.jooq.Record;
+import org.jooq.Record3;
+import org.jooq.SelectConditionStep;
 import spark.utils.StringUtils;
 import z.blog.kit.BlogKit;
 import z.blog.kit.PageInfo;
 import z.blog.mapping.tables.records.ArticleRecord;
-import z.blog.model.dto.Archive;
 import z.blog.model.dto.Type;
 import z.blog.model.entity.Article;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.time.ZoneOffset;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static org.jooq.impl.DSL.*;
+import static org.jooq.impl.DSL.max;
+import static org.jooq.impl.DSL.trim;
 import static z.blog.bootstrap.JooqConfig.dsl;
 import static z.blog.mapping.tables.ARTICLE.T_ARTICLE;
 import static z.blog.mapping.tables.RELATIONSHIP.T_RELATIONSHIP;
@@ -81,7 +78,7 @@ public class ContentService {
     public Article getArticle(String id) {
         log.info("-> 获取文章");
         Condition condition;
-        if (BlogKit.isArticleId(id)) {
+        if (BlogKit.isNumber(id)) {
             condition = T_ARTICLE.AID.eq(Integer.valueOf(id));
         } else {
             condition = T_ARTICLE.FLAG.eq(id);
@@ -148,7 +145,7 @@ public class ContentService {
                 dsl.select(T_RELATIONSHIP.AID).from(T_RELATIONSHIP).where(T_RELATIONSHIP.MID.eq(mid))
         )).and(T_ARTICLE.STATUS.eq(PUBLISH)).and(T_ARTICLE.TYPE.eq(POST));
         //统计总数
-        Integer total = selectCount().from(query).fetchOneInto(Integer.class);
+        Integer total = dsl.selectCount().from(query).fetchOneInto(Integer.class);
         //分页数据
         List<Article> list = query.limit((pageNum - 1) * pageSize, pageSize).fetchInto(Article.class);
         //分页对象
@@ -182,7 +179,8 @@ public class ContentService {
                         T_ARTICLE.AID.eq(
                                 dsl.select(max(T_ARTICLE.AID)).from(T_ARTICLE).where(condition)
                         )
-                ).fetchOneInto(Article.class);
+                ).and(T_ARTICLE.TYPE.eq(POST))
+                .fetchOneInto(Article.class);
     }
 
     /**
@@ -190,52 +188,25 @@ public class ContentService {
      *
      * @return 文章归档列表
      */
-    public PageInfo<Archive> getArchive(int pageNum, int pageSize) {
+    public PageInfo<Article> getArchive(int pageNum, int pageSize) {
         log.info("-> 获取文章归档分页[pageNum: {} ,pageSize: {}]", pageNum, pageSize);
-        //数据SQL
-        SelectSeekStep1<Record3<Integer, String, Integer>, Integer> data = dsl.select(
+        //参数处理
+        pageNum = Optional.of(pageNum).filter(i -> (i > 0 && i < 999)).orElse(1);
+        pageSize = Optional.of(pageSize).filter(i -> (i > 0 && i < 100)).orElse(10);
+        //查询SQL
+        SelectConditionStep<Record3<Integer, String, Integer>> query = dsl.select(
                 T_ARTICLE.AID,
                 T_ARTICLE.TITLE,
                 T_ARTICLE.CREATE_TIME
-        ).from(T_ARTICLE)
-                .where(T_ARTICLE.TYPE.eq(POST)).and(T_ARTICLE.STATUS.eq(PUBLISH)).
-                        orderBy(T_ARTICLE.CREATE_TIME.desc());
-
-        //获取总数
-        Integer total = dsl.select(count()).from(data).fetchOne(count());
-        //构建分页参数
-        data.limit((pageNum - 1) * pageSize, pageSize);
-        //查询分页数据
-        List<Archive> list = dsl.select(
-                field("StrFTime('%Y-%m', datetime(create_time, 'unixepoch', 'localtime'))").as("name"),
-                count().as("count")
-        ).from(data).groupBy(field("name")).orderBy(field("name")).fetchInto(Archive.class)
-                .stream().map(this::parseArchive).collect(Collectors.toList());
+        ).from(T_ARTICLE).where(T_ARTICLE.TYPE.eq(POST)).and(T_ARTICLE.STATUS.eq(PUBLISH));
+        //统计总数
+        Integer total = dsl.selectCount().from(query).fetchOneInto(Integer.class);
         //分页数据
-        PageInfo<Archive> pageInfo = new PageInfo<>(list, total, pageNum, pageSize);
-        log.info("-> {}", pageInfo.toString());
-        return pageInfo;
-    }
-
-    private Archive parseArchive(Archive archive) {
-        String dateTitle = archive.getName();
-
-        YearMonth startM = YearMonth.parse(dateTitle);
-        LocalDate startDate = LocalDate.of(startM.getYear(), startM.getMonth(), 1);
-        LocalDate endDate = startDate.with(TemporalAdjusters.lastDayOfMonth());
-        LocalDateTime startLDT = LocalDateTime.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0);
-        LocalDateTime endLDT = LocalDateTime.of(endDate.getYear(), endDate.getMonth(), endDate.getDayOfMonth(), 23, 59, 59);
-
-        List<Article> list = dsl.select(T_ARTICLE.AID,
-                T_ARTICLE.TITLE,
-                T_ARTICLE.CREATE_TIME).from(T_ARTICLE)
-                .where(T_ARTICLE.TYPE.eq(POST))
-                .and(T_ARTICLE.STATUS.eq(PUBLISH))
-                .and(T_ARTICLE.CREATE_TIME.ge((int) startLDT.toEpochSecond(ZoneOffset.of("+8"))))
-                .and(T_ARTICLE.CREATE_TIME.le((int) endLDT.toEpochSecond(ZoneOffset.of("+8"))))
+        List<Article> list = query.orderBy(T_ARTICLE.CREATE_TIME.desc())
+                .limit((pageNum - 1) * pageSize, pageSize)
                 .fetchInto(Article.class);
-        archive.setList(list);
-        return archive;
+        //分页对象
+        return new PageInfo<>(list, total, pageNum, pageSize);
     }
 
     /**
