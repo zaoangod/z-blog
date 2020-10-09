@@ -2,6 +2,8 @@ package z.blog.model.dto;
 
 public interface Type {
 
+    String json = "application/json";
+
     /**
      * 文章类型
      */

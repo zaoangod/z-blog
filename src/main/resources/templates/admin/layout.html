@@ -2,142 +2,62 @@
 <html lang="zh-CN">
 <head>
     #include('./partial/head.html', {title: '文章管理'})
+    <link href="/static/common/mditor/mditor.min.css" rel="stylesheet">
+    <script src="/static/common/mditor/mditor.min.js"></script>
 </head>
 <body>
+<div>
+    <!--
+    <div class="box">
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="https://bulma.io">
+                    <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28">
+                </a>
 
-<div id="app">
-    <v-app id="sandbox">
-        <v-navigation-drawer
-                v-model="primaryDrawer.model"
-                :clipped="primaryDrawer.clipped"
-                :floating="primaryDrawer.floating"
-                :mini-variant="primaryDrawer.mini"
-                :permanent="primaryDrawer.type === 'permanent'"
-                :temporary="primaryDrawer.type === 'temporary'"
-                app
-                overflow>
-            <v-list dense>
-                <template v-for="item in menuList">
-                    <v-row v-if="item.heading" :key="item.heading" align="center">
-                        <v-col cols="6">
-                            <v-subheader v-if="item.heading">{{item.heading}}</v-subheader>
-                        </v-col>
-                        <v-col cols="6" class="text-center">
-                            <a href="#!" class="body-2 black--text">EDIT</a>
-                        </v-col>
-                    </v-row>
-                    <v-list-group v-else-if="item.children" :key="item.text" v-model="item.model" :prepend-icon="item.model ? item.icon : item['icon-alt']" append-icon="">
-                        <template v-slot:activator>
-                            <v-list-item>
-                                <v-list-item-content>
-                                    <v-list-item-title>{{ item.text }}</v-list-item-title>
-                                </v-list-item-content>
-                            </v-list-item>
-                        </template>
-                        <v-list-item v-for="(child, i) in item.children" :key="i" @click="">
-                            <v-list-item-action v-if="child.icon">
-                                <v-icon>{{ child.icon }}</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title>{{ child.text }}</v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
-                    </v-list-group>
-                    <v-list-item v-else :key="item.text" @click="">
-                        <v-list-item-action>
-                            <v-icon>{{ item.icon }}</v-icon>
-                        </v-list-item-action>
-                        <v-list-item-content>
-                            <v-list-item-title>{{ item.text }}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
-                </template>
-            </v-list>
-        </v-navigation-drawer>
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
 
-        <v-app-bar :clipped-left="primaryDrawer.clipped" app>
-            <v-app-bar-nav-icon v-if="primaryDrawer.type !== 'permanent'" @click.stop="primaryDrawer.model = !primaryDrawer.model"></v-app-bar-nav-icon>
-            <v-toolbar-title>后台管理</v-toolbar-title>
-            <div class="flex-grow-1"></div>
-            <v-btn icon>
-                <v-icon>mdi-invert-colors</v-icon>
-            </v-btn>
-        </v-app-bar>
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start">
+                </div>
 
-        <v-content>
-            <v-container fluid>
-                <!--面包屑导航-->
-                <template>
-                    <v-breadcrumbs :items="navList" divider=">"></v-breadcrumbs>
-                </template>
-                <!--内容-->
-                <v-card class="mx-auto" color="#F9F9F9">
-                </v-card>
-            </v-container>
-        </v-content>
+                <div class="navbar-end">
 
-        <v-footer :inset="false" app>
-            <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
-        </v-footer>
-    </v-app>
+                    <div class="dropdown is-active">
+                        <div class="dropdown-trigger">
+                            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                <span>Dropdown button</span>
+                            </button>
+                        </div>
+                        <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                            <div class="dropdown-content">
+                                <a href="#" class="dropdown-item">个人设置</a>
+                                <a class="dropdown-item">退出</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+    </div>
+    -->
+    <div id="layout">
+        #include('./partial/menu.html')
+        <div id="content">
+            #include('./' + template + '.html')
+        </div>
+    </div>
 </div>
-
+<script src="/admin/static/js/page/${template}.js"></script>
 <script>
-    let vm = new Vue({
-        el: '#app',
-        vuetify: new Vuetify({
-            theme: {dark: false}
-        }),
-        data: {
-            primaryDrawer: {
-                model: null,
-                type: 'default (no property)',
-                clipped: true,
-                floating: false,
-                mini: false,
-            },
-            navList: [
-                {
-                    text: '首页',
-                    disabled: false,
-                    href: '/',
-                },
-                {
-                    text: '文章管理',
-                    disabled: false,
-                    href: 'breadcrumbs_link_1',
-                },
-                {
-                    text: '添加文章',
-                    disabled: true,
-                    href: 'breadcrumbs_link_1',
-                },
-            ],
-            menuList: [
-                {icon: 'library_books', text: '添加文章'},
-                {
-                    icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down',
-                    text: '其他',
-                    model: true,
-                    children: [
-                        {icon: 'add', text: 'Create label'},
-                    ],
-                },
-                {icon: 'settings', text: 'Settings'}
-            ],
-        },
-        beforeCreate: function () {
-            console.log('---> beforeCreate');
-        },
-        mounted: function () {
-            this.load(1);
-        },
-        methods: {
-            load: function (page) {
-                let $vm = this;
-            }
-        }
-    });
+    let app = Vue.extend(main);
+    new app().$mount('#layout');
 </script>
 </body>
 </html>

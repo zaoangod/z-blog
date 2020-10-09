@@ -1,0 +1,8 @@
+<nav class="pagination m-y-1 f f-jc-c t-a-c">
+    <a class="m-x-1" v-if="pageInfo.hasPrevPage" @click="getData(pageInfo.prevPage)"><=</a>
+    <template v-for="item in pageInfo.navigatePageNums">
+        <a class="m-x-1" v-if="pageInfo.pageNum == item">{{item}}</a>
+        <a class="m-x-1" v-if="pageInfo.pageNum != item" @click="getData(item)">{{item}}</a>
+    </template>
+    <a class="m-x-1" v-if="pageInfo.hasNextPage" @click="getData(pageInfo.nextPage)">=></a>
+</nav>

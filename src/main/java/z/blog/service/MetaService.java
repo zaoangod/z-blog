@@ -1,16 +1,15 @@
 package z.blog.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.Record;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
+import org.jooq.impl.DSL;
+import z.blog.kit.R;
+import z.blog.mapping.tables.records.MetaRecord;
 import z.blog.model.entity.Article;
 import z.blog.model.entity.Meta;
 import z.blog.model.entity.Relationship;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static z.blog.bootstrap.JooqConfig.dsl;
@@ -20,25 +19,52 @@ import static z.blog.mapping.tables.RELATIONSHIP.T_RELATIONSHIP;
 
 @Slf4j
 public class MetaService {
+    /**
+     * 保存项
+     *
+     * @param meta 保存参数
+     */
+    public R saveMeta(Meta meta) {
+        log.info("-> 保存项");
+        if (meta == null) {
+            return R.s();
+        }
+        MetaRecord mr = new MetaRecord();
+        if (meta.getTitle() != null) {
+            mr.set(T_META.TITLE, meta.getTitle());
+        }
+        if (meta.getFlag() != null) {
+            mr.set(T_META.FLAG, meta.getFlag());
+        }
+        if (meta.getType() != null) {
+            mr.set(T_META.TYPE, meta.getType());
+        }
+        if (meta.getDescription() != null) {
+            mr.set(T_META.DESCRIPTION, meta.getDescription());
+        }
+        dsl.executeUpdate(mr, T_META.MID.eq(meta.getMid()));
+        return R.s();
+    }
 
     /**
-     * 根据类型查询项目列表
+     * 获取项列表
      *
      * @param meta 查询参数
      */
     public List<Meta> getMeta(Meta meta) {
-        log.info("-> 根据类型查询Meta列表");
+        log.info("-> 获取项列表");
+        meta = Optional.ofNullable(meta).orElse(new Meta());
         SelectJoinStep<Record> data = dsl.select().from(T_META);
-        if (meta != null && meta.getMid() != null) {
+        if (meta.getMid() != null) {
             data.where(T_META.MID.eq(meta.getMid()));
         }
-        if (meta != null && meta.getTitle() != null) {
-            data.where(T_META.TITLE.eq(meta.getTitle()));
+        if (meta.getTitle() != null && !meta.getTitle().isEmpty()) {
+            data.where(T_META.TITLE.like("%" + meta.getTitle() + "%"));
         }
-        if (meta != null && meta.getFlag() != null) {
+        if (meta.getFlag() != null && !meta.getFlag().isEmpty()) {
             data.where(T_META.FLAG.eq(meta.getFlag()));
         }
-        if (meta != null && meta.getType() != null) {
+        if (meta.getType() != null && !meta.getType().isEmpty()) {
             data.where(T_META.TYPE.eq(meta.getType()));
         }
         return data.fetchInto(Meta.class);

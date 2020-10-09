@@ -1,0 +1,183 @@
+html,
+body {
+    height: 100%;
+    width: 100%;
+    color: #777;
+}
+
+td, th {
+    padding: 0.5rem;
+}
+
+input, button, select {
+    height: 2rem;
+    line-height: 2rem;
+}
+
+.b-a {
+    border: 1px solid #cbd5e0;
+}
+
+.b-t {
+    border-top: 1px solid #cbd5e0;
+}
+
+.b-b {
+    border-bottom: 1px solid #cbd5e0;
+}
+
+.b-r {
+    border-right: 1px solid #cbd5e0;
+}
+
+.b-l {
+    border-left: 1px solid #cbd5e0;
+}
+
+/** 表单 */
+.form-box {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.form-label {
+    height: auto;
+    line-height: normal;
+    padding: 0.5rem;
+    min-width: 5.5rem;
+}
+
+.form-input {
+    height: auto;
+    line-height: normal;
+    padding: 0.5rem;
+    flex: 1;
+}
+
+/** 对话框 */
+.z-dialog {
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    position: fixed;
+    overflow: auto;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.z-dialog-wrap {
+    background: #ffffff;
+    overflow: auto;
+    max-height: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.13), 0 0 6px rgba(0, 0, 0, 0.11);
+    z-index: 1;
+    margin: auto;
+}
+
+.z-dialog-header {
+    line-height: 2rem;
+    height: 2rem;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.z-dialog-action {
+    display: flex;
+    justify-content: space-around;
+}
+
+.z-dialog-action button {
+}
+
+/** --------------------------------------------------------------- */
+/** --------------------------------------------------------------- */
+/** ---------------------------------------------------------------/ */
+#layout, #menu {
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+#layout {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 200px auto;
+}
+
+#menu {
+    width: 200px;
+    height: 100%;
+    top: 3.25rem;
+    left: 0;
+    bottom: 0;
+    z-index: 9;
+    overflow-y: auto;
+    font-weight: 600;
+    background: #fff;
+    color: #a3a3a3;
+    padding: 1rem;
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+}
+
+#menu li {
+    padding-top: 1rem;
+}
+
+#content {
+    margin: 1rem;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+    -webkit-box-shadow: 0 1px 6px 0 rgba(0, 0, 0, .12), 0 1px 6px 0 rgba(0, 0, 0, .12);
+}
+
+/** 分页-开始 */
+
+.pagination > a {
+    width: 2rem;
+    height: 2rem;
+    line-height: 2rem;
+    text-align: center;
+    cursor: pointer;
+    color: #fff;
+    background: #777;
+    border-radius: 50%;
+}
+
+.pagination > .page {
+    cursor: pointer;
+}
+
+/** 分页-结束 */
+/** article-edit */
+.article-exit-box {
+    width: 100%;
+    height: 100%;
+}
+
+.article-edit {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-right: 1px solid #ccc;
+    resize: none;
+    outline: none;
+    background-color: #f6f6f6;
+}
+
+.article-html {
+    width: 100%;
+    height: 100%;
+}
+
+/** article-edit */

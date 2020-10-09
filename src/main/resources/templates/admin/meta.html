@@ -1,149 +1,79 @@
-<el-row>
-    <el-col :span="24">
+<!--分类-->
+<div>
+    <h6>Meta管理</h6>
+    <div class="f f-r p-y-1">
+        <input v-model="pageParam.title" class="b-a p-x-1 m-x-1" type="text" placeholder="请输入名称">
+        <select v-model="pageParam.type" class="b-a p-x-1 m-x-1" style="width: 110px;" @change="getData">
+            <option value="">选择类型</option>
+            <option value="tag">标签</option>
+            <option value="category">分类</option>
+        </select>
+        <button class="b-a p-x-1 m-x-1" type="button" @click="getData">搜索</button>
+        <button class="b-a p-x-1 m-x-1" type="button" @click="editDialog = !editDialog">添加</button>
+    </div>
+</div>
+<!--数据-->
+<table>
+    <thead>
+    <tr class="b-t b-b">
+        <th>序号</th>
+        <th>标识</th>
+        <th>名称</th>
+        <th>类型</th>
+        <th>描述</th>
+        <th>统计</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <template v-for="(item, index) in pageInfo.list ">
+        <tr :key="item.mid">
+            <td class="b-a t-a-c" v-text="index + 1"></td>
+            <td class="b-a" v-text="item.flag"></td>
+            <td class="b-a" v-text="item.title"></td>
+            <td class="b-a" v-text="item.type"></td>
+            <td class="b-a" v-text="item.description"></td>
+            <td class="b-a" v-text="item.count"></td>
+            <td class="b-a t-a-c">
+                <template>
+                    <button class="b-a p-x-1" type="button" @click="editHandle(item.mid)">修改</button>
+                    <button class="b-a p-x-1" type="button">删除</button>
+                </template>
+            </td>
+        </tr>
+    </template>
+    </tbody>
+</table>
 
-        <el-card style="margin-bottom: 1rem;">
-            <el-form :inline="true" :model="pageParam">
-                <el-form-item label="名称" style="margin: 0.5rem;">
-                    <el-input v-model="pageParam.name" placeholder="输入名称"></el-input>
-                </el-form-item>
-                <el-form-item label="分类" style="margin: 0.5rem;">
-                    <el-select v-model="pageParam.type" clearable placeholder="选择文章分类">
-                        <el-option label="分类" value="category"></el-option>
-                        <el-option label="标签" value="tag"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item style="margin: 0.5rem;">
-                    <el-button type="primary" size="medium" icon="el-icon-search" @click="load(1)">搜索</el-button>
-                    <el-button type="primary" size="medium" icon="el-icon-search" @click="load(1)">搜索</el-button>
-                </el-form-item>
-            </el-form>
-        </el-card>
-
-        <el-card style="margin-bottom: 1rem;">
-            <el-table :data="pageInfo.list" style="width: 100%;">
-                <el-table-column prop="name" label="名称"></el-table-column>
-                <el-table-column prop="description" label="描述" align="center"></el-table-column>
-                <el-table-column prop="type" label="类型" align="center" width="120">
-                    <template slot-scope="scope">
-                        <el-tag size="medium" type="primary" v-if="scope.row.type === 'category'">分类</el-tag>
-                        <el-tag size="medium" type="success" v-if="scope.row.type === 'tag'">标签</el-tag>
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" align="center" width="140">
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="primary" icon="el-icon-edit" circle @click="edit(scope.row.mid)"></el-button>
-                        <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="del(scope.row.mid)"></el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-card>
-        #include('./partial/pageNav.html')
-    </el-col>
-</el-row>
-
-<el-dialog title="编辑" :visible="dialogEditVisible">
-    <el-form ref="metaForm" :model="metaForm" label-width="80px">
-        <el-form-item label="名称">
-            <el-input v-model="metaForm.name" placeholder="名称"></el-input>
-        </el-form-item>
-        <el-form-item label="类型">
-            <el-select v-model="metaForm.type" placeholder="请选择类型">
-                <el-option label="分类" value="category"></el-option>
-                <el-option label="标签" value="tag"></el-option>
-            </el-select>
-        </el-form-item>
-        <el-form-item label="描述">
-            <el-input type="textarea" v-model="metaForm.description" rows="3"></el-input>
-        </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-        <el-button>取 消</el-button>
-        <el-button type="primary">确 定</el-button>
-    </span>
-</el-dialog>
-
-<script>
-    let main = {
-        data() {
-            return {
-                dialogEditVisible: false,
-                pageInfo: {},
-                pageParam: {page: 1, name: null, type: null},
-                metaForm: {mid: null, name: null, type: null, description: null}
-            };
-        },
-        mounted: function () {
-            this.loadOnce();
-            this.load();
-        },
-        methods: {
-            filterPageParam: function () {
-                let $vm = this;
-                let param = $vm.pageParam;
-                for (let i in param) {
-                    if (param[i] === '') {
-                        $vm.pageParam[i] = null;
-                    }
-                }
-            },
-            loadOnce: function () {
-                let $vm = this;
-            },
-            load: function (pageNum = 1) {
-                let $vm = this;
-                $vm.pageParam.page = pageNum;
-                $vm.filterPageParam();
-                tale.get({
-                    url: '/a/i/meta',
-                    data: $vm.pageParam,
-                    success: (data) => {
-                        console.log(data);
-                        $vm.pageInfo = data.payload;
-                    },
-                    error: (error) => {
-                        console.log(error);
-                    }
-                });
-            },
-            edit: function (id) {
-                let $vm = this;
-                tale.get({
-                    url: '/a/i/meta/' + id,
-                    success: (data) => {
-                        console.log(data);
-                        $vm.metaForm = data.payload;
-                        $vm.dialogEditVisible = true;
-                    },
-                    error: (error) => {
-                        console.log(error);
-                    }
-                });
-            },
-            del: function (cid) {
-                console.log(cid);
-                let $vm = this;
-                this.$confirm('此操作将永久删除该项, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    tale.delete({
-                        url: '/a/i/meta/' + cid,
-                        success: (data) => {
-                            $vm.load(1);
-                            this.$notify({type: 'success', title: '提示', message: '删除成功', duration: 2500});
-                        },
-                        error: (error) => {
-                            console.log(error);
-                        }
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-            }
-        }
-    };
-</script>
+<!--编辑-->
+<div v-show="edit" class="z-dialog">
+    <div class="z-dialog-wrap p-a-3" style="width: 500px;">
+        <div class="z-dialog-header p-x-3">编辑</div>
+        <div class="f f-c f-jc-sb p-x-3 p-y-2">
+            <div class="form-box p-a-1">
+                <span class="form-label">名称</span>
+                <input v-model="formData.title" class="form-input b-a" type="text" placeholder="请输入名称">
+            </div>
+            <div class="form-box p-a-1">
+                <span class="form-label">标识</span>
+                <input v-model="formData.flag" class="form-input b-a" type="text" placeholder="请输入名称">
+            </div>
+            <div class="form-box p-a-1">
+                <span class="form-label">类型</span>
+                <select v-model="formData.type" class="form-input b-a">
+                    <option value="">选择类型</option>
+                    <option value="tag">标签</option>
+                    <option value="category">分类</option>
+                </select>
+            </div>
+            <div class="form-box f-ai-fs p-a-1">
+                <span class="form-label">描述描述</span>
+                <textarea v-model="formData.description" class="form-input b-a" style="resize: none;" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="z-dialog-action">
+            <button @click="submitHandle" type="button" class="b-a p-x-1">确认</button>
+            <button @click="edit = !edit" type="button" class="b-a p-x-1">取消</button>
+        </div>
+    </div>
+</div>

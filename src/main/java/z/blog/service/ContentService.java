@@ -97,23 +97,24 @@ public class ContentService {
         param = Optional.ofNullable(param).orElse(new Article());
         pageNum = Optional.of(pageNum).filter(i -> (i > 0 && i < 999)).orElse(1);
         pageSize = Optional.of(pageSize).filter(i -> (i > 0 && i < 100)).orElse(10);
+        log.info("-> {}", param.getTitle());
         //查询条件
         List<Condition> where = new ArrayList<>();
         //文章标题
         if (StringUtils.isNotEmpty(param.getTitle())) {
-            where.add(T_ARTICLE.TITLE.like("%" + trim(param.getTitle()) + "%"));
+            where.add(T_ARTICLE.TITLE.like("%" + param.getTitle().trim() + "%"));
         }
         //文章类型(post|page)
         if (StringUtils.isNotEmpty(param.getType())) {
-            where.add(T_ARTICLE.TYPE.eq(trim(param.getType())));
+            where.add(T_ARTICLE.TYPE.eq(param.getType().trim()));
         }
         //文章内容类型
         if (StringUtils.isNotEmpty(param.getFormat())) {
-            where.add(T_ARTICLE.FORMAT.eq(trim(param.getFormat())));
+            where.add(T_ARTICLE.FORMAT.eq(param.getFormat().trim()));
         }
         //文章状态
         if (StringUtils.isNotEmpty(param.getStatus())) {
-            where.add(T_ARTICLE.STATUS.eq(trim(param.getStatus())));
+            where.add(T_ARTICLE.STATUS.eq(param.getStatus().trim()));
         }
         //统计总数
         Integer total = dsl.selectCount().from(T_ARTICLE).where(where).fetchOneInto(Integer.class);

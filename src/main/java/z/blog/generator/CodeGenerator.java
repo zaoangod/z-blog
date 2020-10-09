@@ -11,7 +11,7 @@ public class CodeGenerator {
                 .withJdbc(new Jdbc()
                         .withDriver("org.sqlite.JDBC")
                         //.withUrl("jdbc:sqlite:C:\\Users\\zaoangod\\workspace\\z-blog\\src\\main\\resources\\z-blog.db")
-                        .withUrl("jdbc:sqlite:D:\\workspace\\IDEA\\z-blog\\blog.db")
+                        .withUrl("jdbc:sqlite:D:\\workspace\\IDEA\\z-blog\\src\\main\\resources\\blog.db")
                         .withUser(null)
                         .withPassword(null)
                         .withAutoCommit(true)

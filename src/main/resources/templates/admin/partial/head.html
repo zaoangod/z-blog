@@ -1,18 +1,21 @@
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<!--IE 8浏览器的页面渲染方式-->
 <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+<!--默认使用极速内核：针对国内浏览器产商-->
 <meta name="renderer" content="webkit">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-<meta content="zag" name="author">
-<!--<meta content="${_csrf_token}" name="csrf_token">-->
+<!--chrome Android 地址栏颜色-->
 <title>${title ?! '后台管理'}</title>
-<link rel="shortcut icon" href="/static/admin/favicon.svg"/>
-<!--vue-->
-<script src="/admin/static/lib/vue/2.6.10/vue.min.js"></script>
-<!--vuetify-->
-<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-<link href="/admin/static/lib/material-icon/material-icons.css" rel="stylesheet">
+<link rel="shortcut icon" href="${themeUrl()+'/img/favicon.png'}"/>
+<link rel="apple-touch-icon" href="${themeUrl()+'/img/apple-touch-icon.png'}"/>
+<meta http-equiv="Cache-Control" content="no-transform"/>
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
+<!--<meta content="${_csrf_token}" name="csrf_token"/>-->
+<link href="/static/common/base.css" rel="stylesheet">
+<link href="/static/common/util.css" rel="stylesheet">
+<link href="/admin/static/css/style.css" rel="stylesheet">
 
-<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="/static/common/lodash/4.17.20/lodash.min.js"></script>
+<script src="/static/common/vue/2.6.12/vue.min.js"></script>
+<script src="/static/common/axios/0.20.0/axios.min.js"></script>
+<script src="/admin/static/js/base.js"></script>

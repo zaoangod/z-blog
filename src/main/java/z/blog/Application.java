@@ -1,19 +1,21 @@
 package z.blog;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import spark.Spark;
 import z.blog.bootstrap.Bootstrap;
 import z.blog.bootstrap.ViewConfig;
+import z.blog.kit.CacheKit;
 import z.blog.route.Admin;
 import z.blog.route.Content;
 import z.blog.route.Home;
-import z.blog.kit.CacheKit;
 import z.blog.service.CommentService;
 import z.blog.service.ContentService;
 import z.blog.service.MetaService;
 import z.blog.service.SiteService;
 
 import static z.blog.bootstrap.Constant.TEMPLATES;
+import static z.blog.model.dto.Type.json;
 
 @Slf4j
 public class Application {
@@ -76,8 +78,19 @@ public class Application {
 
         //admin
         Spark.path("/a", () -> {
-            Spark.get("/index", Admin.index);
-            Spark.get("/:mid/:pageNum", Home.metaInfo);
+            Spark.get("/:template", Admin.template);
+            Spark.get("/i/article", json, Admin.getArticlePage, new Gson()::toJson);
+            Spark.get("/i/meta", json, Admin.getMetaList, new Gson()::toJson);
+            Spark.post("/i/meta", json, Admin.saveMeta, new Gson()::toJson);
+            Spark.get("/i/meta/:mid", json, Admin.getMeta, new Gson()::toJson);
+
+            /*post("/install", JSON, AdminApi.install, new Gson()::toJson);
+            get("/article", JSON, AdminApi.getContentPage, new Gson()::toJson);
+            delete("/article/:cid", JSON, AdminApi.delContent, new Gson()::toJson);
+            get("/page", JSON, AdminApi.getContentPage, new Gson()::toJson);
+            get("/category", JSON, AdminApi.getCategoryList, new Gson()::toJson);
+            get("/attach", JSON, AdminApi.getAttachList, new Gson()::toJson);*/
+
         });
 
         //首页

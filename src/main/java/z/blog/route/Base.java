@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import spark.ModelAndView;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,4 +39,11 @@ public class Base {
         templatePath = ADMIN + separator + templatePath;
         return view.render(new ModelAndView(data, templatePath));
     }
+
+    public static Map<String, Object> data(String k, Object v) {
+        Map<String, Object> param = new HashMap<>();
+        param.put(k, v);
+        return param;
+    }
+
 }
