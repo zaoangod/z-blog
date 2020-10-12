@@ -80,17 +80,12 @@ public class Application {
         Spark.path("/a", () -> {
             Spark.get("/:template", Admin.template);
             Spark.get("/i/article", json, Admin.getArticlePage, new Gson()::toJson);
-            Spark.get("/i/meta", json, Admin.getMetaList, new Gson()::toJson);
-            Spark.post("/i/meta", json, Admin.saveMeta, new Gson()::toJson);
-            Spark.get("/i/meta/:mid", json, Admin.getMeta, new Gson()::toJson);
-
-            /*post("/install", JSON, AdminApi.install, new Gson()::toJson);
-            get("/article", JSON, AdminApi.getContentPage, new Gson()::toJson);
-            delete("/article/:cid", JSON, AdminApi.delContent, new Gson()::toJson);
-            get("/page", JSON, AdminApi.getContentPage, new Gson()::toJson);
-            get("/category", JSON, AdminApi.getCategoryList, new Gson()::toJson);
-            get("/attach", JSON, AdminApi.getAttachList, new Gson()::toJson);*/
-
+            Spark.path("/i", () -> {
+                Spark.get("/meta", json, Admin.getMetaList, new Gson()::toJson);
+                Spark.post("/meta", json, Admin.saveMeta, new Gson()::toJson);
+                Spark.get("/meta/:mid", json, Admin.getMeta, new Gson()::toJson);
+                Spark.delete("/meta/:mid", Admin.delMeta, new Gson()::toJson);
+            });
         });
 
         //首页

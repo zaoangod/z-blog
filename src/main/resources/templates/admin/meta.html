@@ -35,10 +35,8 @@
             <td class="b-a" v-text="item.description"></td>
             <td class="b-a" v-text="item.count"></td>
             <td class="b-a t-a-c">
-                <template>
-                    <button class="b-a p-x-1" type="button" @click="editHandle(item.mid)">修改</button>
-                    <button class="b-a p-x-1" type="button">删除</button>
-                </template>
+                <button class="b-a p-x-1" type="button" @click="editHandle(item.mid)">修改</button>
+                <button class="b-a p-x-1" type="button" @click="deleteHandle(item.mid)">删除</button>
             </td>
         </tr>
     </template>
@@ -48,7 +46,10 @@
 <!--编辑-->
 <div v-show="edit" class="z-dialog">
     <div class="z-dialog-wrap p-a-3" style="width: 500px;">
-        <div class="z-dialog-header p-x-3">编辑</div>
+        <div class="z-dialog-header f f-jc-sb f-ai-c p-x-2">
+            <span>编辑</span>
+            <img @click="edit = false" class="z-dialog-close" src="/admin/static/img/icon-close.svg">
+        </div>
         <div class="f f-c f-jc-sb p-x-3 p-y-2">
             <div class="form-box p-a-1">
                 <span class="form-label">名称</span>
@@ -71,6 +72,20 @@
                 <textarea v-model="formData.description" class="form-input b-a" style="resize: none;" rows="3"></textarea>
             </div>
         </div>
+        <div class="z-dialog-action">
+            <button @click="submitHandle" type="button" class="b-a p-x-1">确认</button>
+            <button @click="edit = !edit" type="button" class="b-a p-x-1">取消</button>
+        </div>
+    </div>
+</div>
+<!--删除弹框-->
+<div v-show="edit" class="z-dialog">
+    <div class="z-dialog-wrap p-a-2" style="width: 300px;">
+        <div class="z-dialog-header f f-jc-sb f-ai-c p-x-2">
+            <span>提示</span>
+            <img @click="edit = false" class="z-dialog-close" src="/admin/static/img/icon-close.svg">
+        </div>
+        <div class="p-x-3 p-y-2">确认进行当前操作吗?</div>
         <div class="z-dialog-action">
             <button @click="submitHandle" type="button" class="b-a p-x-1">确认</button>
             <button @click="edit = !edit" type="button" class="b-a p-x-1">取消</button>

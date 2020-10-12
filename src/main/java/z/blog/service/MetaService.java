@@ -1,8 +1,8 @@
 package z.blog.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.*;
-import org.jooq.impl.DSL;
+import org.jooq.Record;
+import org.jooq.SelectJoinStep;
 import z.blog.kit.R;
 import z.blog.mapping.tables.records.MetaRecord;
 import z.blog.model.entity.Article;
@@ -20,12 +20,12 @@ import static z.blog.mapping.tables.RELATIONSHIP.T_RELATIONSHIP;
 @Slf4j
 public class MetaService {
     /**
-     * 保存项
+     * 修改/添加Meta
      *
-     * @param meta 保存参数
+     * @param meta 参数
      */
     public R saveMeta(Meta meta) {
-        log.info("-> 保存项");
+        log.info("-> 修改/添加Meta");
         if (meta == null) {
             return R.s();
         }
@@ -42,7 +42,28 @@ public class MetaService {
         if (meta.getDescription() != null) {
             mr.set(T_META.DESCRIPTION, meta.getDescription());
         }
+        if (meta.getCount() != null) {
+            mr.set(T_META.COUNT, meta.getCount());
+        }
         dsl.executeUpdate(mr, T_META.MID.eq(meta.getMid()));
+        return R.s();
+    }
+
+    /**
+     * 删除Meta
+     *
+     * @param mid id
+     */
+    public R delMeta(int mid) {
+        log.info("-> 删除Meta, mid: {}", mid);
+        Meta meta = dsl.select().from(T_META).where(T_META.MID.eq(mid)).fetchOne().into(Meta.class);
+        if (meta == null) {
+            return R.f("未找到要删除的数据");
+        }
+        if (meta.getCount() > 0) {
+            return R.f("要删除的数据下存在文章");
+        }
+        dsl.delete(T_META).where(T_META.MID.eq(mid)).execute();
         return R.s();
     }
 

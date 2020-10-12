@@ -3,8 +3,13 @@
     'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
     'X-Requested-With': 'XMLHttpRequest'
 };*/
+const request = axios.create({
+    baseURL: '/',
+    timeout: 10000,
+    headers: {}
+});
 /** axios 拦截器 */
-axios.interceptors.request.use(config => {
+request.interceptors.request.use(config => {
     blog.loadingProgress();
     return config;
 }, err => {
@@ -12,7 +17,7 @@ axios.interceptors.request.use(config => {
     blog.loadingProgress('hide');
     return Promise.reject(err);
 });
-axios.interceptors.response.use(response => {
+request.interceptors.response.use(response => {
     blog.loadingProgress('hide');
     return response;
 }, function (err) {
@@ -20,7 +25,7 @@ axios.interceptors.response.use(response => {
     return Promise.reject(err);
 });
 //
-blog = {
+let blog = {
     loadingProgress: function (model) {
         /*if (!model) {
             document.getElementById('loadingProgress').style.display = 'block';
@@ -28,32 +33,37 @@ blog = {
             document.getElementById('loadingProgress').style.display = 'none';
         }*/
     },
-    get: function (options) {
-        return axios.get(options.url, {
-            params: options.data || {}
+    get: function (option) {
+        option.data = option.data || {};
+        option.data._t = Date.now();
+        return request({
+            url: option.url,
+            method: 'get',
+            params: option.data
         }).then((response) => {
-            options.success && options.success(response.data);
+            option.success && option.success(response.data);
         }).catch((error) => {
             console.log('base -> get -> error:\n');
             console.log(error);
-            options.error && options.error(error);
+            option.error && option.error(error);
         });
     },
-    post: function (options) {
-        console.log(options);
-        return axios.post(options.url, options.data || {}, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-            },
+    post: function (option) {
+        option.data = option.data || {};
+        option.data._t = Date.now();
+        return request({
+            url: option.url,
+            method: 'post',
+            params: option.data
         }).then((response) => {
-            options.success && options.success(response.data);
+            option.success && option.success(response.data);
         }).catch((error) => {
-            console.log('base -> post -> error:\n');
+            console.log('base -> get -> error:\n');
             console.log(error);
-            options.error && options.error(error);
+            option.error && option.error(error);
         });
     },
-    delete: function (options) {
+    /*delete: function (options) {
         return axios.delete(options.url, {data: options.data || {}}).then((response) => {
             options.success && options.success(response.data);
         }).catch((error) => {
@@ -70,7 +80,7 @@ blog = {
             console.log(error);
             options.error && options.error(error);
         });
-    },
+    },*/
     maxFiles: function () {
         return 10;
     },

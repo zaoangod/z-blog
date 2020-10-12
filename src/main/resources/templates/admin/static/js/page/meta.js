@@ -67,6 +67,9 @@ let main = {
                     console.log(e);
                 }
             });
-        }
+        },
+        deleteHandle(mid) {
+
+        },
     }
 };
