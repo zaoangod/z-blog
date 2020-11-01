@@ -78,6 +78,7 @@ public class Application {
 
         //admin
         Spark.path("/a", () -> {
+            //后台页面路由
             Spark.get("/:template", Admin.template);
             Spark.get("/i/article", json, Admin.getArticlePage, new Gson()::toJson);
             Spark.path("/i", () -> {

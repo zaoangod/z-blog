@@ -6,46 +6,25 @@
     <script src="/static/common/mditor/mditor.min.js"></script>
 </head>
 <body>
-<div>
-    <div id="layout">
-        #include('./partial/menu.html')
-        <div id="content">
-            #include('./' + template + '.html')
-        </div>
-        <!--自定义-->
-        <counter title="提示" content="内容"></counter>
+<div id="layout">
+    #include('./partial/menu.html')
+    <div id="content">
+        #include('./' + template + '.html')
     </div>
+    <!--自定义-->
+    <counter title="提示" content="内容"></counter>
 </div>
 <script src="/admin/static/js/page/${template}.js"></script>
 <script>
-    Vue.component('counter', {
-        props: {
-            title: {
-                type: String,
-                default: '提示'
-            },
-            content: {
-                type: String,
-                required: true
-            },
-        },
-        methods: {
-            incrementCounter: function () {
-                this.counter += 1
-                this.$emit('increment')
-            }
-        },
-        //1.组件名为"conter"; 2.data 写函数; 3.template 写组件的内容（元素和触发的事件）
-        data() {
-            return {
-                count: 0
-            }
-        },
-        //template 是模板的意思，在 html 里面是一个可以同时控制多个子元素的父元素。在这里定义了组件的内容
-        template: '<button v-on:click="count++">{{title}}-{{content}},点击计算点击次数：{{count}}次</button>'
-    });
     let app = Vue.extend(main);
     new app().$mount('#layout');
+    //
+    MessageBox.alert('这是一段内容', '标题名称', {
+        confirmButtonText: '确定',
+        callback: action => {
+
+        }
+    });
 </script>
 </body>
 </html>

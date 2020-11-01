@@ -44,13 +44,13 @@
 </table>
 
 <!--编辑-->
-<div v-show="edit" class="z-dialog">
-    <div class="z-dialog-wrap p-a-3" style="width: 500px;">
-        <div class="z-dialog-header f f-jc-sb f-ai-c p-x-2">
+<div v-show="edit" class="z-dialog-cover">
+    <div class="z-dialog-wrap" style="width: 500px;">
+        <div class="z-dialog-header">
             <span>编辑</span>
-            <img @click="edit = false" class="z-dialog-close" src="/admin/static/img/icon-close.svg">
+            <img @click="edit = false" src="/admin/static/img/icon-close.svg">
         </div>
-        <div class="f f-c f-jc-sb p-x-3 p-y-2">
+        <div class="z-dialog-body">
             <div class="form-box p-a-1">
                 <span class="form-label">名称</span>
                 <input v-model="formData.title" class="form-input b-a" type="text" placeholder="请输入名称">
@@ -79,6 +79,7 @@
     </div>
 </div>
 <!--删除弹框-->
+<!--
 <div v-show="edit" class="z-dialog">
     <div class="z-dialog-wrap p-a-2" style="width: 300px;">
         <div class="z-dialog-header f f-jc-sb f-ai-c p-x-2">
@@ -91,4 +92,4 @@
             <button @click="edit = !edit" type="button" class="b-a p-x-1">取消</button>
         </div>
     </div>
-</div>
+</div>-->

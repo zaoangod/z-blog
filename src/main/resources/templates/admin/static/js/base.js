@@ -109,16 +109,3 @@ Vue.filter('truncate', function (value, size = 10, append = '...') {
     }
     return value;
 });
-
-//ajax 请求
-const CONTENT_TYPE = {
-    json: 'application/json;charset=UTF-8',
-    form: 'application/x-www-form-urlencoded;charset=UTF-8'
-}
-const METHOD = {
-    get: 'GET',
-    post: 'POST',
-    put: 'PUT',
-    patch: 'PATCH',
-    delete: 'DELETE'
-}
