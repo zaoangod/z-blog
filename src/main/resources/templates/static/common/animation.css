@@ -1,0 +1,34 @@
+.msg-box-fade-enter-active {
+    animation: msg-box-fade-in .3s
+}
+
+.msg-box-fade-leave-active {
+    animation: msg-box-fade-out .3s
+}
+
+@keyframes msg-box-fade-in {
+    0% {
+        transform: translate3d(0, -20px, 0);
+        opacity: 0
+    }
+    100% {
+        opacity: 1
+    }
+
+    to {
+        transform: translateZ(0);
+        opacity: 1
+    }
+}
+
+@keyframes msg-box-fade-out {
+    0% {
+        transform: translateZ(0);
+        opacity: 1
+    }
+
+    to {
+        transform: translate3d(0, -20px, 0);
+        opacity: 0
+    }
+}

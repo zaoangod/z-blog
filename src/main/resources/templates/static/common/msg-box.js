@@ -1,61 +1,31 @@
-let msgBox = {
+let ZMessageUtil = {
     template: `
-            <template>
+        <template>
+            <transition name="msg-box-fade">
                 <div v-show="visible" class="z-dialog-cover">
-                    <div class="z-dialog-wrap" :style="'width:' + width + 'px'">
-                        <div class="z-dialog-header">
-                            <span>{{title}}</span>
-                            <img v-show="showClose" @click="edit = false" src="/admin/static/img/icon-close.svg">
-                        </div>
-                        <div class="z-dialog-body">
-                            {{content}}
-                        </div>
-                        <div class="z-dialog-action">
-                            <button type="button" class="b-a p-x-1">确认</button>
-                            <button type="button" class="b-a p-x-1">取消</button>
-                        </div>
+                    <div class="z-dialog-wrap" :style="'width:'+width+'px'">
+                        <div class="z-dialog-header" v-show="title">{{title}}</div>
+                        <div class="z-dialog-body">{{content}}</div>
+                        <div class="z-dialog-action" v-show="showConfirmButton == true || showCancelButton == true">
+                            <button type="button" @click="handleAction('confirm')" v-show="showConfirmButton">{{confirmButtonText?confirmButtonText:'确认'}}</button>
+                            <button type="button" @click="handleAction('cancel')" v-show="showCancelButton">{{cancelButtonText?cancelButtonText:'取消'}}</button>
+                      </div>
                     </div>
                 </div>
-            </template>`,
+            </transition>
+        </template>`,
     props: {
-        //是否显示左上角关闭按钮
-        showClose: {
-            type: Boolean,
-            default: false,
-            required: false
-        },
+        //宽度
         width: {
             type: Number,
-            default: 500,
+            default: 300,
             required: false
         }
     },
-    components: {
-        //ElInput, ElButton
-    },
-    computed: {},
     methods: {
-        getSafeClose() {
-            const currentId = this.uid;
-            return () => {
-                this.$nextTick(() => {
-                    if (currentId === this.uid) {
-                        this.doClose();
-                    }
-                });
-            };
-        },
         handleAction(action) {
             this.action = action;
-            if (typeof this.beforeClose === 'function') {
-                this.close = this.getSafeClose();
-                this.beforeClose(action, this, this.close);
-            } else {
-                this.doClose();
-            }
-        },
-        handleClose() {
-            this.handleAction('close');
+            this.doClose();
         },
         doClose() {
             if (!this.visible) {
@@ -64,20 +34,24 @@ let msgBox = {
             this.visible = false;
             setTimeout(() => {
                 if (this.action) {
-                    this.callback(this.action, this)
+                    this.callback(this.action, this);
                 }
             });
-        }
-    },
-    watch: {
-        visible(val) {
-            if (val) {
-                this.uid++;
+        },
+        startTimer() {
+            console.log('-> ' + this.type)
+            if (this.duration > 0 && this.type === 'toast') {
+                this.timer = setTimeout(() => {
+                    if (this.visible) {
+                        this.doClose();
+                    }
+                }, this.duration);
             }
         }
     },
-    mounted() {
+    created() {
         this.$nextTick(() => {
+            this.startTimer();
             /*if (this.closeOnHashChange) {
                 window.addEventListener('hashchange', this.close);
             }*/
@@ -90,64 +64,62 @@ let msgBox = {
     },
     data() {
         return {
-            visible: false,
             uid: 1,
+            duration: 3000,
+            timer: null,
+            visible: false,
             title: undefined,
-            message: '',
+            content: '',
             type: '',
             showConfirmButton: true,
             showCancelButton: false,
-            action: '',
             confirmButtonText: '',
             cancelButtonText: '',
+            beforeClose: null,
             callback: null
         };
     }
 };
 //------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------
-const MessageBoxConstructor = Vue.extend(msgBox);
-let currentMsg, instance;
+const zMsgUtilConstructor = Vue.extend(ZMessageUtil);
+let zCurrentMsg;
+let instance;
 let msgQueue = [];
 const defaults = {
-    title: null,
-    message: '',
+    duration: 3000,
+    visible: false,
+    title: undefined,
+    content: '',
     type: '',
-    showClose: true,
-    modalFade: true,
-    closeOnHashChange: true,
     showConfirmButton: true,
     showCancelButton: false,
-    confirmButtonPosition: 'right',
-    confirmButtonHighlight: false,
-    cancelButtonHighlight: false,
     confirmButtonText: '',
     cancelButtonText: '',
     beforeClose: null,
+    callback: null
 };
 //默认回调函数
-const defaultCallback = action => {
-    if (currentMsg) {
-        let callback = currentMsg.callback;
+const zDefaultCallback = action => {
+    if (zCurrentMsg) {
+        let callback = zCurrentMsg.callback;
         if (typeof callback === 'function') {
             callback(action);
         }
-        if (currentMsg.resolve) {
+        if (zCurrentMsg.resolve) {
             if (action === 'confirm') {
-                currentMsg.resolve(action);
-            } else if (currentMsg.reject && (action === 'cancel' || action === 'close')) {
-                currentMsg.reject(action);
+                zCurrentMsg.resolve();
+            } else if (zCurrentMsg.reject && (action === 'cancel' || action === 'close')) {
+                zCurrentMsg.reject();
             }
         }
     }
 };
-const initInstance = () => {
-    instance = new MessageBoxConstructor({
+//创建实例
+const zCreateInstance = () => {
+    instance = new zMsgUtilConstructor({
         el: document.createElement('div')
     });
-    instance.callback = defaultCallback;
+    instance.callback = zDefaultCallback;
 };
 
 //判断是否VNode
@@ -173,46 +145,39 @@ function merge(target) {
 
 const showNextMsg = () => {
     if (!instance) {
-        initInstance();
+        zCreateInstance();
     }
     instance.action = '';
     if (!instance.visible && msgQueue.length > 0) {
-        currentMsg = msgQueue.shift();
-        let options = currentMsg.options;
+        zCurrentMsg = msgQueue.shift();
+        let options = zCurrentMsg.options;
         for (let prop in options) {
             if (options.hasOwnProperty(prop)) {
                 instance[prop] = options[prop];
             }
         }
-        if (options.callback === undefined) {
-            instance.callback = defaultCallback;
+        if (options.callback === undefined || options.callback === null) {
+            instance.callback = zDefaultCallback;
         }
         let oldCb = instance.callback;
         instance.callback = (action, instance) => {
             oldCb(action, instance);
             showNextMsg();
         };
-        if (isVNode(instance.message)) {
-            instance.$slots.default = [instance.message];
-            instance.message = null;
+        if (isVNode(instance.content)) {
+            instance.$slots.default = [instance.content];
+            instance.content = null;
         } else {
             delete instance.$slots.default;
         }
-        ['modal', 'showClose', 'closeOnHashChange'].forEach(prop => {
-            if (instance[prop] === undefined) {
-                instance[prop] = true;
-            }
-        });
         document.body.appendChild(instance.$el);
-        Vue.nextTick(() => {
-            instance.visible = true;
-        });
+        Vue.nextTick(() => instance.visible = true);
     }
 };
 const MessageBox = function (options, callback) {
     if (typeof options === 'string' || isVNode(options)) {
         options = {
-            message: options
+            content: options
         };
         if (typeof arguments[1] === 'string') {
             options.title = arguments[1];
@@ -238,6 +203,13 @@ const MessageBox = function (options, callback) {
         showNextMsg();
     }
 };
+MessageBox.close = () => {
+    instance.doClose();
+    instance.visible = false;
+    instance.timer = null;
+    msgQueue = [];
+    zCurrentMsg = null;
+};
 MessageBox.setDefaults = defaults => {
     MessageBox.defaults = defaults;
 };
@@ -251,13 +223,33 @@ MessageBox.alert = (content, title, options) => {
     return MessageBox(merge({
         title: title,
         content: content,
-        $type: 'alert'
+        type: 'alert',
+        showConfirmButton: true,
+        showCancelButton: false,
     }, options));
 };
-MessageBox.close = () => {
-    instance.doClose();
-    instance.visible = false;
-    msgQueue = [];
-    currentMsg = null;
+MessageBox.confirm = (content, title, options) => {
+    if (typeof title === 'object') {
+        options = title;
+        title = '';
+    } else if (title === undefined) {
+        title = '';
+    }
+    return MessageBox(merge({
+        title: title,
+        content: content,
+        type: 'confirm',
+        showConfirmButton: true,
+        showCancelButton: true,
+    }, options));
+};
+MessageBox.toast = (content) => {
+    return MessageBox(merge({
+        title: undefined,
+        content: content,
+        type: 'toast',
+        showConfirmButton: false,
+        showCancelButton: false,
+    }));
 };
 Vue.component(MessageBox);
